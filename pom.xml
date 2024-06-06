@@ -15,7 +15,7 @@
 	<description>SmartERP</description>
 	<properties>
 		<java.version>17</java.version>
-		<hilla.version>2.5.5</hilla.version>
+		<hilla.version>2.5.7</hilla.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -76,6 +76,11 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
