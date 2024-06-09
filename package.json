@@ -3,8 +3,6 @@
   "license": "UNLICENSED",
   "type": "module",
   "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
     "@hilla/form": "2.5.7",
     "@hilla/frontend": "2.5.7",
     "@hilla/generator-typescript-cli": "2.5.7",
@@ -21,7 +19,6 @@
     "@hilla/react-crud": "2.5.7",
     "@hilla/react-form": "2.5.7",
     "@iconify/react": "^5.0.1",
-    "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.19",
     "@polymer/polymer": "3.5.1",
     "@vaadin/bundles": "24.3.0",
@@ -29,7 +26,6 @@
     "@vaadin/router": "1.7.5",
     "construct-style-sheets-polyfill": "3.1.0",
     "lit": "3.1.2",
-    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "react-router-dom": "^6.4.2"
