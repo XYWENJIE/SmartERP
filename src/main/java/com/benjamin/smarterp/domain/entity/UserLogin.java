@@ -36,6 +36,9 @@ public class UserLogin {
     @Column(name = "ENABLED")
     private Boolean enabled = Boolean.FALSE;
 
+    @Column(name = "IS_SYSTEM")
+    private Boolean isSystem;
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "USERNAME")
     private Set<Authorities> authorities;
