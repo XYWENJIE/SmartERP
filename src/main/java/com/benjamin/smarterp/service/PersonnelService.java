@@ -1,15 +1,12 @@
 package com.benjamin.smarterp.service;
 
-import com.benjamin.smarterp.domain.entity.Personnel;
 import com.benjamin.smarterp.repository.jpa.PersonnelRepository;
-import com.github.javaparser.quality.NotNull;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
-import dev.hilla.BrowserCallable;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@AnonymousAllowed
-@BrowserCallable
+@Service
 public class PersonnelService {
 
     private PersonnelRepository personnelRepository;

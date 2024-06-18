@@ -6,7 +6,6 @@ import com.benjamin.smarterp.repository.jpa.AuthoritiesRepository;
 import com.benjamin.smarterp.repository.jpa.PersonnelRepository;
 import com.benjamin.smarterp.repository.jpa.UserInfoRepository;
 import com.benjamin.smarterp.security.JpaUserDetailsManager;
-import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -26,23 +24,8 @@ import java.util.Optional;
 @Slf4j
 @EnableWebSecurity
 @Configuration
-public class SecurityConfiguration extends VaadinWebSecurity {
+public class SecurityConfiguration {
 
-
-
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(register ->{
-            register.requestMatchers(new AntPathRequestMatcher("/public-view")).permitAll();
-        });
-        super.configure(http);
-        http.formLogin(Customizer.withDefaults());
-    }
-
-    @Override
-    protected void configure(WebSecurity web) throws Exception {
-        super.configure(web);
-        web.ignoring().requestMatchers(new AntPathRequestMatcher("/images/**"));
-    }
 
     @Bean
     public UserDetailsManager userDetailsManager(UserInfoRepository userInfoRepository,
