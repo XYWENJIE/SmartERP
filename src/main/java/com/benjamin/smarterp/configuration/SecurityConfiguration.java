@@ -1,45 +1,41 @@
 package com.benjamin.smarterp.configuration;
 
 import com.benjamin.smarterp.domain.entity.Personnel;
-import com.benjamin.smarterp.domain.entity.UserInfo;
-import com.benjamin.smarterp.repository.jpa.AuthoritiesRepository;
-import com.benjamin.smarterp.repository.jpa.PersonnelRepository;
-import com.benjamin.smarterp.repository.jpa.UserInfoRepository;
+import com.benjamin.smarterp.domain.entity.UserLogin;
+import com.benjamin.smarterp.repository.jpa.*;
 import com.benjamin.smarterp.security.JpaUserDetailsManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
 import java.util.Optional;
 
 @Slf4j
-@EnableWebSecurity
+@EnableWebFluxSecurity
 @Configuration
 public class SecurityConfiguration {
 
 
     @Bean
-    public UserDetailsManager userDetailsManager(UserInfoRepository userInfoRepository,
+    public UserDetailsManager userDetailsManager(UserLoginRepository userLoginRepository,
                                                  AuthoritiesRepository authoritiesRepository,
-                                                 PasswordEncoder passwordEncoder, PersonnelRepository personnelRepository){
-        JpaUserDetailsManager userDetailsManager = new JpaUserDetailsManager(userInfoRepository,authoritiesRepository,passwordEncoder);
+                                                 PasswordEncoder passwordEncoder, PersonnelRepository personnelRepository,
+                                                 UserLoginHistoryRepository userLoginHistoryRepository,
+                                                 UserLoginPasswordHistoryRepository userLoginPasswordHistoryRepository){
+        JpaUserDetailsManager userDetailsManager = new JpaUserDetailsManager(
+                userLoginRepository,authoritiesRepository,passwordEncoder,userLoginHistoryRepository,userLoginPasswordHistoryRepository);
         if(!userDetailsManager.userExists("admin")){
             userDetailsManager.createUser(User.withUsername("admin").password("huang1100").roles("ADMIN").build());
             Personnel personnel = personnelRepository.save(Personnel.builder().name("黄文杰").email("xywenjie@outlook.com").build());
-            Optional<UserInfo> optional = userInfoRepository.findByUsername("admin");
+            Optional<UserLogin> optional = userLoginRepository.findByUsername("admin");
             if(optional.isPresent()){
-                UserInfo userInfo = optional.get();
+            	UserLogin userInfo = optional.get();
                 userInfo.setPersonnel(personnel);
-                userInfoRepository.save(userInfo);
+                userLoginRepository.save(userInfo);
             }
         }
         return userDetailsManager;

@@ -5,16 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "TAB_USER")
-public class UserInfo {
+@Table(name = "TAB_USER_LOGIN")
+public class UserLogin {
 
     @Builder
-    public UserInfo(String username, String password, Boolean enabled, Set<Authorities> authorities) {
+    public UserLogin(String username, String password, Boolean enabled, Set<Authorities> authorities) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
@@ -22,10 +23,14 @@ public class UserInfo {
     }
 
     @Id
-    @Column(name = "USERNAME")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Integer id;
+
+    @Column(name = "USERNAME",unique = true,nullable = false)
     private String username;
 
-    @Column(name = "PASSWORD")
+    @Column(name = "PASSWORD",nullable = false)
     private String password;
 
     @Column(name = "ENABLED")
@@ -38,4 +43,8 @@ public class UserInfo {
     @OneToOne
     @JoinColumn(name = "PERSONNEL_ID")
     private Personnel personnel;
+
+    @OneToMany
+    @JoinColumn(name = "USER_LOGIN_ID")
+    private List<UserLoginHistory> userLoginHistories;
 }
