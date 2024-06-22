@@ -2,6 +2,7 @@ import { Outlet, useRoutes } from 'react-router-dom';
 import DashboardLayout from '../layouts/dashboard';
 import { Suspense } from 'react';
 import AppPage from '../pages/app.tsx';
+import {ChatView} from "../sections/chat/view";
 
 export default function Router(){
   const routes = useRoutes([
@@ -15,7 +16,8 @@ export default function Router(){
       ),
       children:[
         {element:<AppPage/>,index:true},
-        {path:'user',element:<div>user</div>}
+        {path:'user',element:<div>user</div>},
+        {path:'chat',element:<ChatView/>}
       ]
     }
   ]);
