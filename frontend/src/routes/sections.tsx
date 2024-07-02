@@ -3,6 +3,7 @@ import DashboardLayout from '../layouts/dashboard';
 import { Suspense } from 'react';
 import AppPage from '../pages/app.tsx';
 import {ChatView} from "../sections/chat/view";
+import LoginPage from '../pages/login.tsx';
 
 export default function Router(){
   const routes = useRoutes([
@@ -19,6 +20,10 @@ export default function Router(){
         {path:'user',element:<div>user</div>},
         {path:'chat',element:<ChatView/>}
       ]
+    },
+    {
+      path:'login',
+      element:<LoginPage/>
     }
   ]);
   return routes;

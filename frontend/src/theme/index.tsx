@@ -1,4 +1,4 @@
-import {ThemeProvider as MUIThemeProvider} from '@mui/material/styles';
+import { ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
 import { createTheme, CssBaseline } from '@mui/material';
 import { useMemo } from 'react';
 import { overrides } from './overrides.ts';
@@ -11,9 +11,38 @@ interface ThemeProviderProps {
   children:React.ReactNode;
 }
 
+declare module '@mui/material/styles' {
+  interface Theme {
+    layout:{
+      header:{
+        desktop:{
+          height:number
+        }
+      }
+    }
+  }
+
+  interface ThemeOptions {
+    layout:{
+      header:{
+        desktop:{
+          height:number
+        }
+      }
+    }
+  }
+}
+
 const ThemeProvider:React.FC<ThemeProviderProps> = ({children}) =>{
 
   const memoizedValue = useMemo(()=>({
+    layout:{
+      header:{
+        desktop:{
+          height:72
+        }
+      }
+    },
     palette:palette(),
     typography,
     shadows:shadows(),
