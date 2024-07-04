@@ -36,7 +36,7 @@ public class UserLoginPasswordHistory {
      */
     @CreatedDate
     @Column(name = "FROM_DATE",nullable = false)
-    private LocalDateTime fromDate;
+    private LocalDateTime fromDate = LocalDateTime.now();
 
     /**
      * 密码失效时间

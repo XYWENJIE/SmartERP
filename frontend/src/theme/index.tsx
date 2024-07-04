@@ -47,7 +47,7 @@ const ThemeProvider:React.FC<ThemeProviderProps> = ({children}) =>{
     typography,
     shadows:shadows(),
     customShadows:customShadows(),
-    shape:{borderRadius:8}
+    shape:{borderRadius:8},
   }),
     []
   );

@@ -77,12 +77,12 @@ export default function ChatView(){
                             <Autocomplete
                               options={top100Films}
                               multiple={true}
+                              popupIcon={null}
                               forcePopupIcon={false}
-                              renderInput={
-                                (params) => <TextField {...params} label="+ Recipients"/>
-                            } sx={{
-                                minWidth:'320px',
-                                flexGrow:'unset',
+                              renderInput={(params) => <TextField {...params} placeholder="+ Recipients"/> }
+                              sx={{
+                                minWidth: { md:320 },
+                                flexGrow:{xs:1,md:'unset'},
                                 ...(mdDown && {
                                     flexGrow:1,
                                 })

@@ -5,25 +5,26 @@ import {
   Box,
   ButtonBase,
   IconButton,
-  InputAdornment,
+  InputAdornment, ListItemButton, ListItemText,
   Skeleton,
   Stack,
-  TextField,
+  TextField, Typography,
 } from '@mui/material';
 import { AccountCircle, ChevronLeft, PersonAdd } from '@mui/icons-material';
 import { useResponsive } from '../../hooks/use-responsive.ts';
 import { Icon } from '@iconify/react';
 import { useEffect, useMemo, useState } from 'react';
-import SimpleBarWrapper from './SimpleBarWrapper.tsx';
 import api from '../../utils/api.ts';
+import SimpleBar from 'simplebar-react';
 
 interface ContactsProps{
-
+  id:string;
+  name:string;
 }
 
 
 export default function Contacts(){
-  const [loadProcess,setLoadProcess] = useState(false);
+  const [loadProcess,setLoadProcess] = useState(true);
   const [contacts,setContacts] = useState<ContactsProps[]>([])
   const lgUp = useResponsive('down','md');
   const rowCount = 8;
@@ -31,11 +32,12 @@ export default function Contacts(){
   useEffect(()=>{
       const conslist = async () => {
         const response = await api.get('chat/contacts');
-
+        setContacts(response.data);
+        setLoadProcess(false);
       }
 
-    conslist();
-  })
+      conslist();
+  },[])
 
   const skeletons = Array.from({length:rowCount}).map(()=>(
     <Stack direction="row" sx={{
@@ -67,28 +69,34 @@ export default function Contacts(){
     </Stack>
   ));
 
-
-
-  const simpleBarWrapper = useMemo(()=> (
-    <div className="simplebar-wrapper" style={{
-      margin: '0px 0px -8px',
-    }}>
-      <div className="simplebar-height-auto-observer-wrapper">
-        <div className="simplebar-height-auto-observer"></div>
-      </div>
-      <div className="simplebar-mask">
-        <div className="simplebar-offset">
-          <div className="simplebar-content-wrapper">
-            <div className="simplebar-content">
-              <nav>
-
-              </nav>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  ),[]);
+  const contactsList = useMemo(()=>(
+    <Box>
+      <Box >
+        {contacts.map((contact) => (
+          <ListItemButton key={contact.id} sx={{
+            gap:'16px'
+          }}>
+            <Badge color={"primary"} variant={"dot"}><Avatar src={'https://api-prod-minimal-v6.pages.dev/assets/images/avatar/avatar-2.webp'}/></Badge>
+            <ListItemText>
+              <Typography variant={"subtitle2"}>{contact.name}</Typography>
+              <Typography noWrap={true} variant={"body2"} sx={{
+                color:(theme) => theme.palette.text.secondary,
+              }}>
+                You: The waves crashed against the shore, creating a soothing symphony of sound.
+              </Typography>
+            </ListItemText>
+            <Stack>
+              <Typography noWrap={true} variant={"body2"} sx={{
+                margin:'0px 0px 12px',
+                color:(theme) => theme.palette.text.secondary,
+                fontSize:'12px'
+              }}>a day</Typography>
+            </Stack>
+          </ListItemButton >
+        ))}
+      </Box>
+    </Box>
+  ),[contacts])
 
   return (
     <>
@@ -166,12 +174,12 @@ export default function Contacts(){
                        }}>
             </TextField>
           </Box>
-          <Box>
-            {loadProcess ? skeletons : <SimpleBarWrapper><div>Hello Word</div></SimpleBarWrapper>}
-          </Box>
+          {loadProcess ? skeletons : <SimpleBar>{contactsList}</SimpleBar>}
 
         </Stack>
       </Box>
     </>
   );
 }
+
+/*<SimpleBarWrapper>{contactsList}</SimpleBarWrapper>*/

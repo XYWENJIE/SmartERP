@@ -1,0 +1,29 @@
+
+###
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "huang1100"
+}
+
+### con
+GET http://localhost:8080/chat/contacts
+Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3MTk4MzY3ODksImlhdCI6MTcxOTgwMDc4OSwic2NvcGUiOiIifQ.AW_GnR3LElEjWuUAnCwVUjiW8CNCW1RGe9NF43b6mI6O4xApzqThz8G4OquE3zI33EGkNF9mboySNxOWpt74WwM89VMQx8LtORYKpAAXk5gBc-KvUs-VagiAdQKAbTSudvE0GVJSA1VCCGbhqYr73MYgPQfVH68uH0Y_CR4VZ1feaFIbl8mxWkM0prCr8l5-PwZqauF6fsZz_tGnuwjjFMvmLAhaAa4PhoFqUSeerXxv1YX70PsbIGRqV8nW7FWMpyomYaM9i6uRQ7tnuuPRt09OdLkaO263w8WU5F4QY9Sn_jdRiTpBcg0ZqIat8TVez1QZvZ5-B5l663-c9vxgNA
+
+### OAuth2确认同意
+POST http://localhost:8080/oauth2/authorize
+Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3MTk4MzY3ODksImlhdCI6MTcxOTgwMDc4OSwic2NvcGUiOiIifQ.AW_GnR3LElEjWuUAnCwVUjiW8CNCW1RGe9NF43b6mI6O4xApzqThz8G4OquE3zI33EGkNF9mboySNxOWpt74WwM89VMQx8LtORYKpAAXk5gBc-KvUs-VagiAdQKAbTSudvE0GVJSA1VCCGbhqYr73MYgPQfVH68uH0Y_CR4VZ1feaFIbl8mxWkM0prCr8l5-PwZqauF6fsZz_tGnuwjjFMvmLAhaAa4PhoFqUSeerXxv1YX70PsbIGRqV8nW7FWMpyomYaM9i6uRQ7tnuuPRt09OdLkaO263w8WU5F4QY9Sn_jdRiTpBcg0ZqIat8TVez1QZvZ5-B5l663-c9vxgNA
+Content-Type: application/json
+
+{
+  "response_type": "code",
+  "client_id": "oidc-client"
+}

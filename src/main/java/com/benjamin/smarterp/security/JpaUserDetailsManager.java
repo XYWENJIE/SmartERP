@@ -8,6 +8,7 @@ import com.benjamin.smarterp.repository.jpa.AuthoritiesRepository;
 import com.benjamin.smarterp.repository.jpa.UserLoginRepository;
 import com.benjamin.smarterp.repository.jpa.UserLoginHistoryRepository;
 import com.benjamin.smarterp.repository.jpa.UserLoginPasswordHistoryRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Transactional
 public class JpaUserDetailsManager implements UserDetailsManager {
 
@@ -47,6 +49,7 @@ public class JpaUserDetailsManager implements UserDetailsManager {
     @Override
     public void createUser(UserDetails user) {
     	UserLogin userInfo = UserLogin.builder().username(user.getUsername()).password(passwordEncoder.encode(user.getPassword())).build();
+        log.info("CreateUser");
         this.userLoginRepository.save(userInfo);
 
         this.userLoginPasswordHistoryRepository.save(
@@ -101,7 +104,7 @@ public class JpaUserDetailsManager implements UserDetailsManager {
             throw new UsernameNotFoundException(username);
         }
         UserLogin userInfo = optional.get();
-        this.userLoginHistoryRepository.save(UserLoginHistory.builder().userLoginId(userInfo.getId()).build());
+        this.userLoginHistoryRepository.save(UserLoginHistory.builder().userLoginId(userInfo.getId()).formDate(LocalDateTime.now()).build());
         List<GrantedAuthority> authorities = new ArrayList<>(userInfo.getAuthorities().stream().map(authorities1 -> new SimpleGrantedAuthority(authorities1.getAuthority())).toList());
         return new User(userInfo.getUsername(),userInfo.getPassword(),authorities);
     }
