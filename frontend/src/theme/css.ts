@@ -1,4 +1,4 @@
-import { alpha } from '@mui/material';
+import { alpha, Theme } from '@mui/material';
 
 interface bgBlurProps{
   color?:string,
@@ -6,6 +6,10 @@ interface bgBlurProps{
   opacity?:number,
   imgUrl?:string
 }
+
+export const menuItem = (theme:Theme) => ({
+  ...theme.typography.body2
+})
 
 export function bgBlur(props:bgBlurProps){
   const color = props?.color || '#000000';

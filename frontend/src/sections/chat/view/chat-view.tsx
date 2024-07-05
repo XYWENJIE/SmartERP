@@ -4,7 +4,7 @@ import {
     Avatar,
     Badge,
     Box,
-    Button,
+    Button, Chip,
     Container,
     IconButton,
     Input, InputAdornment, InputBase, Skeleton,
@@ -16,6 +16,8 @@ import theme from '../../../theme';
 import Contacts from '../contacts.tsx';
 import { useResponsive } from '../../../hooks/use-responsive.ts';
 import { Icon } from '@iconify/react';
+import { useEffect, useState } from 'react';
+import api from '../../../utils/api.ts';
 
 const top100Films = [
     {label:'The Shawshank Redemption',year:1994},
@@ -24,18 +26,27 @@ const top100Films = [
     {label:'The Shawshank Redemption',year:1994}
 ]
 
+interface Contact{
+    name:string;
+    id:string;
+    avatarUrl:string;
+}
+
 export default function ChatView(){
     const mdDown = useResponsive('down','md')
+    const [contacts,setContacts] = useState<Contact[]>([]);
+    useEffect(()=>{
+        const conslist = async () => {
+            const response = await api.get('chat/contacts');
+            setContacts(response.data);
+        }
+
+        conslist();
+    },[])
     return (
         <>
-            <Container sx={{
-                width:'100%',
-                marginLeft:'auto',
-                boxSizing:'border-box',
-                marginRight:'auto',
-                flex:'1 1 auto',
-                paddingTop:(theme) =>  '64px',
-                paddingBottom:(theme) => '64px'
+            <Container maxWidth={false} sx={{
+
             }}>
                 <Typography variant="h4" sx={{
                     marginBottom:'40px'
@@ -75,17 +86,60 @@ export default function ChatView(){
 
                             }}>To:</Typography>
                             <Autocomplete
-                              options={top100Films}
+                              options={contacts}
                               multiple={true}
                               popupIcon={null}
+                              limitTags={3}
+                              getOptionLabel={(option) => option.name}
                               forcePopupIcon={false}
+                              renderOption={(props,option,state) => {
+                                  const {key,...optionPros} = props;
+                                  console.log(state)
+                                  return (
+                                    <li key={key} {...optionPros}>
+                                        <Stack direction={"row"} sx={{
+                                            mr:1,
+                                            width:32,
+                                            height:32,
+                                            borderRadius:'50%',
+                                            position:"relative"
+                                        }}>
+                                            <Avatar src={option.avatarUrl} sx={{
+                                                width:1,
+                                                height:1,
+                                            }}/>
+                                            <Box component={"div"}  alignItems={"center"} justifyContent={"center"}
+                                                sx={{
+                                                   top:0,
+                                                    left:0,
+                                                    width:1,
+                                                    height:1,
+                                                    opacity:0,
+                                                    position:"absolute",
+                                                    bgcolor:(theme) => alpha(theme.palette.grey[900],.8),
+                                                    transition:(theme) => theme.transitions.create('all',{
+                                                        easing:theme.transitions.easing.easeInOut,
+                                                        duration:theme.transitions.duration.shorter
+                                                    }),
+                                                    ...state.selected && {
+                                                        opacity:1,
+                                                       color:'primary.main'
+                                                    }
+                                                }}>
+                                                <Icon icon={"eva:checkmark-fill"}/>
+                                            </Box>
+                                        </Stack>
+                                        {option.name}
+                                    </li>
+                                  )
+                              }}
+                              renderTags={(value,dsa) =>(
+                                value.map((l,d) => <Chip {...dsa} key={l.id} label={l.name} avatar={<Avatar src={l.avatarUrl}></Avatar>} size={'small'} variant={"filled"}></Chip>)
+                              )}
                               renderInput={(params) => <TextField {...params} placeholder="+ Recipients"/> }
                               sx={{
                                 minWidth: { md:320 },
                                 flexGrow:{xs:1,md:'unset'},
-                                ...(mdDown && {
-                                    flexGrow:1,
-                                })
                             }}></Autocomplete>
                         </Stack>
                         {/*css-1swz2th*/}

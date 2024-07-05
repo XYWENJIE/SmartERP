@@ -5,13 +5,6 @@ import { outlinedInputClasses } from '@mui/material/OutlinedInput';
 
 export function overrides(theme:any) {
   return {
-    MuiContainer:{
-      styleOverrides:{
-        root:{
-          paddingLeft:'12px'
-        }
-      }
-    },
     MuiCssBaseline: {
       styleOverrides: {
         '*': {
