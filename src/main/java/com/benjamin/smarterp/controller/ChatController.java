@@ -20,7 +20,7 @@ public class ChatController {
     @GetMapping("contacts")
     public List<Contact> contacts() throws InterruptedException {
         List<Contact> contactList = new ArrayList<>();contactList.add(new Contact("busy","e9sf09a7-d488-49d5-b1c8-1daf80c7d7b1","CEO","nannie.abernathy70@yahoo.com","Jayvion Simon",LocalDateTime.now(),"https://pub-c5e31b5cdafb419fb247a8ac2e78df7a.r2.dev/mock/assets/images/avatar/avatar-1.webp","+1 202-555-0143"));
-        contactList.add(new Contact("busy","e99f09a7-dd818-49d5-b1c8-1daf80c8d7b1","AI","nannie.abernathy70@yahoo.com","ChatGML",LocalDateTime.now(),"http://localhost:8080/a821c0ab-f8a0-5284-a714-679e578992f5_0.png","+1 202-555-0143"));
+        contactList.add(new Contact("busy","e99f09a7-dd818-49d5-b1c8-1daf80c8d7b1","AI","nannie.abernathy70@yahoo.com","SmartAssist",LocalDateTime.now(),"http://localhost:8080/a821c0ab-f8a0-5284-a714-679e578992f5_0.png","+1 202-555-0143"));
         return contactList;
     }
 
