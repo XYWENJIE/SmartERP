@@ -1,4 +1,4 @@
-import { alpha, Theme } from '@mui/material';
+import { alpha, Color, Theme } from '@mui/material';
 
 interface bgBlurProps{
   color?:string,
@@ -20,5 +20,17 @@ export function bgBlur(props:bgBlurProps){
     backdropFilter:`blur(${blur}px)`,
     WebkitBackdropFilter:`blur(${blur}px)`,
     backgroundColor:alpha(color,opacity)
+  }
+}
+
+export const PopoverRed = (theme:Theme,color:Color) => {
+  return {
+    backgroundImage:'url(/assets/cyan-blur.png), url(/assets/red-blur.png)',
+    backgroundRepeat:'no-repeat, no-repeat',
+    backgroundPosition:"top right, left bottom",
+    backgroundSize:'50% 50%',
+    ...theme.direction === "rtl" && {
+      backgroundPosition:"top left, right bottom",
+    }
   }
 }

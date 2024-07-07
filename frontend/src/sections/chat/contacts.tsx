@@ -16,6 +16,7 @@ import { Icon } from '@iconify/react';
 import { useEffect, useMemo, useState } from 'react';
 import api from '../../utils/api.ts';
 import SimpleBar from 'simplebar-react';
+import MuiSimpleBar from '../MuiSimpleBar.tsx';
 
 interface ContactsProps{
   id:string;
@@ -101,6 +102,8 @@ export default function Contacts(){
   return (
     <>
       <Box sx={{
+        display:'flex',
+        flexDirection:"columns",
         ...(lgUp && {}),
       }}>
         <ButtonBase sx={{
@@ -174,7 +177,7 @@ export default function Contacts(){
                        }}>
             </TextField>
           </Box>
-          {loadProcess ? skeletons : <SimpleBar>{contactsList}</SimpleBar>}
+          {loadProcess ? skeletons : <MuiSimpleBar>{contactsList}</MuiSimpleBar>}
 
         </Stack>
       </Box>
