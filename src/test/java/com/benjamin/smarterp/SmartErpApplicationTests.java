@@ -1,5 +1,6 @@
 package com.benjamin.smarterp;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,15 @@ class SmartErpApplicationTests {
 
 	private final MockMvc mockMvc;
 
-	private final Jwt jwt = Jwt.withTokenValue("token").header("alg","none").claim("sub","admin").build();
+	private final ObjectMapper objectMapper;
+
+	private final Jwt jwt = Jwt.withTokenValue("token").header("alg","none").claim("sub","huangrenjia").build();
 
 	@Autowired
-	public SmartErpApplicationTests(MockMvc mockMvc) {
+	public SmartErpApplicationTests(MockMvc mockMvc, ObjectMapper objectMapper) {
 		this.mockMvc = mockMvc;
-	}
+        this.objectMapper = objectMapper;
+    }
 
 	@Test
 	void contextLoads() {

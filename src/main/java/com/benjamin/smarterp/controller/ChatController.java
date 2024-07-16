@@ -4,12 +4,18 @@ import com.benjamin.smarterp.domain.Request;
 import com.benjamin.smarterp.domain.ResultStatus;
 import com.benjamin.smarterp.domain.entity.ChatMessage;
 import com.benjamin.smarterp.domain.entity.Personnel;
+import com.benjamin.smarterp.domain.entity.Team;
 import com.benjamin.smarterp.repository.jpa.ChatMessageRepository;
 import com.benjamin.smarterp.repository.jpa.PersonnelRepository;
 import com.benjamin.smarterp.service.CommonService;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -40,10 +46,12 @@ public class ChatController {
     public List<Contact> contacts() {
         Personnel personnel = this.commonService.authenticationConvert();
         log.debug("获取当前登录对象UserInfo信息{}",personnel);
-        List<Personnel> userInfoList = this.personnelRepository.findByRobot(true);
-        log.debug("加载默认默认联系人，比如机器人等，加载{}条记录",userInfoList.size());
-        log.debug("加载当前用户的团队{}",personnel.getId());
-        userInfoList.addAll(this.personnelRepository.findByTeams(null));
+        List<Personnel> userInfoList = this.personnelRepository.findAll((root, query, criteriaBuilder) -> {
+            Predicate[] predicates = new Predicate[2];
+            predicates[0] = criteriaBuilder.isTrue(root.get("robot"));
+            predicates[1] = root.get("teams").get("id").in(personnel.getTeams().stream().map(Team::getId).toList());
+            return criteriaBuilder.or(predicates);
+        });
         log.debug("成功加载联系人{}",userInfoList.size());
         List<Contact> contactList = new ArrayList<>();
         contactList.addAll(userInfoList.stream().map(userInfo1 -> new Contact("busy",userInfo1.getId().toString(),"CEO",userInfo1.getEmail(),userInfo1.getRealName(),LocalDateTime.now(),userInfo1.getAvatarUrl(),userInfo1.getPhone())).toList());

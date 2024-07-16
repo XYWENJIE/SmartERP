@@ -14,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -38,13 +36,9 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
-import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -120,16 +114,17 @@ public class SecurityConfiguration {
                                                  UserLoginPasswordHistoryRepository userLoginPasswordHistoryRepository){
         JpaUserDetailsManager userDetailsManager = new JpaUserDetailsManager(
                 userLoginRepository,authoritiesRepository,passwordEncoder,userLoginHistoryRepository,userLoginPasswordHistoryRepository);
-        if(!userDetailsManager.userExists("admin")){
-            userDetailsManager.createUser(User.withUsername("admin").password("huang1100").roles("ADMIN").build());
-            Personnel personnel = personnelRepository.save(Personnel.builder().realName("黄文杰").email("xywenjie@outlook.com").build());
-            Optional<UserLogin> optional = userLoginRepository.findByUsername("admin");
-            if(optional.isPresent()){
-            	UserLogin userInfo = optional.get();
-                userInfo.setPersonnel(personnel);
-                userLoginRepository.save(userInfo);
-            }
-        }
+//        if(!userDetailsManager.userExists("admin")){
+//            userDetailsManager.createUser(User.withUsername("admin").password("huang1100").roles("ADMIN").build());
+//
+//            Personnel personnel = personnelRepository.save(Personnel.builder().realName("黄文杰").email("xywenjie@outlook.com").build());
+//            Optional<UserLogin> optional = userLoginRepository.findByUsername("admin");
+//            if(optional.isPresent()){
+//            	UserLogin userInfo = optional.get();
+//                userInfo.setPersonnel(personnel);
+//                userLoginRepository.save(userInfo);
+//            }
+//        }
         return userDetailsManager;
     }
 

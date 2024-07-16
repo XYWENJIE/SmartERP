@@ -15,11 +15,12 @@ import java.util.Set;
 public class UserLogin {
 
     @Builder
-    public UserLogin(String username, String password, Boolean enabled, Set<Authorities> authorities) {
+    public UserLogin(String username, String password, Boolean enabled,Boolean isSystem, Set<Authorities> authorities) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
         this.authorities = authorities;
+        this.isSystem = isSystem;
     }
 
     @Id
@@ -33,10 +34,10 @@ public class UserLogin {
     @Column(name = "PASSWORD",nullable = false)
     private String password;
 
-    @Column(name = "ENABLED")
+    @Column(name = "ENABLED",nullable = false)
     private Boolean enabled = Boolean.FALSE;
 
-    @Column(name = "IS_SYSTEM")
+    @Column(name = "IS_SYSTEM",nullable = false)
     private Boolean isSystem;
 
     @OneToMany(fetch = FetchType.EAGER)

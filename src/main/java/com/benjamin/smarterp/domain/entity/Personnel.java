@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,6 +51,6 @@ public class Personnel {
 
     @ManyToMany
     @JoinTable(name = "TAB_USER_TEAM",joinColumns = @JoinColumn(name = "USER_ID"),inverseJoinColumns = @JoinColumn(name = "TEAM_ID"))
-    private List<Team> teams;
+    private List<Team> teams = new ArrayList<>();
 
 }
