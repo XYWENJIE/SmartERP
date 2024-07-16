@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class Authorities {
 
     @Builder
-    public Authorities(Integer id, String username, String authority) {
+    public Authorities(Integer id,Integer userLoginId, String username, String authority) {
         this.id = id;
         this.username = username;
         this.authority = authority;
@@ -22,6 +22,9 @@ public class Authorities {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Integer id;
+
+    @Column(name = "USER_LOGIN_ID")
+    private Integer userLoginId;
 
     @Column(name = "USERNAME")
     private String username;

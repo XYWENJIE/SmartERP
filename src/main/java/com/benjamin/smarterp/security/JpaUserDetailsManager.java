@@ -49,16 +49,18 @@ public class JpaUserDetailsManager implements UserDetailsManager {
     @Override
     public void createUser(UserDetails user) {
     	UserLogin userInfo = UserLogin.builder().username(user.getUsername()).password(passwordEncoder.encode(user.getPassword())).build();
-        log.info("CreateUser");
+        log.info("创建用户{}",userInfo.toString());
         this.userLoginRepository.save(userInfo);
 
         this.userLoginPasswordHistoryRepository.save(
                 UserLoginPasswordHistory.builder()
                         .currentPassword(user.getPassword())
                         .userLoginId(userInfo.getId())
+                        .fromDate(LocalDateTime.now())
                         .build()
         );
-        List<Authorities> authoritiesList = user.getAuthorities().stream().map(authority -> Authorities.builder().username(user.getUsername()).authority(authority.getAuthority()).build()).toList();
+        List<Authorities> authoritiesList = user.getAuthorities().stream().map(authority -> Authorities.builder().userLoginId(userInfo.getId()).username(user.getUsername()).authority(authority.getAuthority()).build()).toList();
+        log.info("保存权限");
         this.authoritiesRepository.saveAll(authoritiesList);
     }
 

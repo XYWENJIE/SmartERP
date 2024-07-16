@@ -2,7 +2,7 @@ import SimpleBar from 'simplebar-react';
 import { Box } from '@mui/material';
 
 interface MuiSimpleBarProps {
-  children:React.ReactNode;
+  children?:React.ReactNode;
 }
 
 const MuiSimpleBar:React.FC<MuiSimpleBarProps> = ({children}) => {

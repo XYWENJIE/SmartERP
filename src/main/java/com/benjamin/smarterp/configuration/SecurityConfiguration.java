@@ -122,7 +122,7 @@ public class SecurityConfiguration {
                 userLoginRepository,authoritiesRepository,passwordEncoder,userLoginHistoryRepository,userLoginPasswordHistoryRepository);
         if(!userDetailsManager.userExists("admin")){
             userDetailsManager.createUser(User.withUsername("admin").password("huang1100").roles("ADMIN").build());
-            Personnel personnel = personnelRepository.save(Personnel.builder().name("黄文杰").email("xywenjie@outlook.com").build());
+            Personnel personnel = personnelRepository.save(Personnel.builder().realName("黄文杰").email("xywenjie@outlook.com").build());
             Optional<UserLogin> optional = userLoginRepository.findByUsername("admin");
             if(optional.isPresent()){
             	UserLogin userInfo = optional.get();

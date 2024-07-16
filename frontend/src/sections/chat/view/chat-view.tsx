@@ -7,7 +7,7 @@ import {
   Button, Chip,
   Container,
   IconButton,
-  Input, InputAdornment, InputBase, ListItemText, Skeleton,
+  Input, InputAdornment, InputBase, LinearProgress, ListItemButton, ListItemText, Skeleton,
   Stack, TextField,
   Typography,
 } from '@mui/material';
@@ -23,6 +23,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import CommunicationTools from '../CommunicationTools.tsx';
 import SimpleBar from 'simplebar-react';
 import LayoutMainContent from '../../LayoutMainContent.tsx';
+import MuiSimpleBar from '../../MuiSimpleBar.tsx';
 
 
 
@@ -32,6 +33,101 @@ interface Contact{
     avatarUrl:string;
 }
 
+/*-----------------*/
+
+interface Conversation{
+  id:string;
+  participants:Participant[];
+  messages:Message[];
+}
+
+interface Message {
+  body:string
+}
+
+interface Participant{
+  id:string;
+}
+
+interface MessageBoxPros {
+  conversation:Conversation
+}
+
+const MessageBox:React.FC<MessageBoxPros> = ({conversation}) => {
+  //const userInfo = localStorage.getItem("userInfo");
+  return (
+    <>{conversation.messages.map((message) => {
+      const me = true;
+      return (
+        <Stack direction={'row'} sx={{
+          mb:5
+        }}>
+          <Avatar sx={{
+            width:32,
+            height:32,
+            mr:2
+          }}/>
+          <Stack>{/*flex-start*/}
+            <Typography noWrap={false} variant={'caption'} sx={{
+              mb:1,
+              color:'text.disabled'
+            }}>Admin 3 小时</Typography>
+            <Stack direction={'row'} alignContent={'center'} sx={{
+              position:'relative',
+              "&:hover":{
+                "& .message-actions":{
+                  opacity:1
+                }
+              }
+            }}>
+
+              <Stack sx={{
+                p:1.5,
+                minWidth:50,
+                maxWidth:320,
+                borderRadius:1,
+                typography:'body2',
+                bgcolor:(theme)=>theme.palette.primary.light,
+                ...me && {
+                  color:'grey.800',
+                  bgcolor:'primary.lighter'
+                }
+              }}>
+                {message.body}
+              </Stack>
+              <Stack direction={'row'} className={'message-actions'} sx={{
+                pt:.5,
+                left:0,
+                opacity:1,
+                top:'100%',
+                position:'absolute',
+                transition:(theme) => theme.transitions.create(['opacity'],{
+                  duration:theme.transitions.duration.shorter
+                })
+              }}>
+                <IconButton size={'small'}><Icon icon={'solar:reply-bold'} width={16}/></IconButton>
+                <IconButton size={'small'}><Icon icon={'eva:smiling-face-fill'} width={16}/></IconButton>
+                <IconButton size={'small'}><Icon icon={'solar:trash-bin-trash-bold'} width={16}/></IconButton>
+              </Stack>
+
+            </Stack>
+          </Stack>
+        </Stack>
+      )
+      })}</>
+  )
+}
+
+interface ListButtonPros {
+  children?:React.ReactNode
+}
+
+const ListButton:React.FC<ListButtonPros> = ({children}) => (
+  <ListItemButton>
+    {children}
+  </ListItemButton>
+);
+
 export default function ChatView(){
     const mdDown = useResponsive('down','md')
     const router = useRouter();
@@ -40,6 +136,8 @@ export default function ChatView(){
     const [searchParams] = useSearchParams();
     const [id,setId] = useState(searchParams.get("id"));
     const [message,setMessage] = useState("");
+
+    const [conversation,setConversation] = useState<Conversation>(null);
     useEffect(()=>{
         const conslist = async () => {
             const response = await api.get('/chat/contacts');
@@ -53,20 +151,26 @@ export default function ChatView(){
     if(id){
       const loaderConversation = async () => {
         const response = await api.get(`/chat/conversation/${id}`);
+        setConversation(response.data);
       }
       loaderConversation();
 
     }
   }, [id]);
 
+  /**
+   * 发送消息
+   */
   const handleSendMessage = async () => {
-      if(selectedContacts.length > 0 && message.trim() !== ""){
+      if(conversation == null && message.trim() !== ""){
           const data = {message:message,contacts:selectedContacts.map(contact => contact.id)};
           const response = await api.post("/chat/conversation",data)
         const chatId = response.data.result;
         setMessage("");
         setId(chatId);
         router.push(`/chat?id=${chatId}`)
+      }else {
+        console.log("fafafa");
       }
   }
   return (
@@ -189,14 +293,24 @@ export default function ChatView(){
                     minWidth:'0px',
                   }}>
                     {id ? (<>
-                      <Box flexDirection={'column'} display={'flex'} component={SimpleBar} sx={{
-                        minWidth:0,
-                        minHeight:0,
-                        padding:"40px 24px 24px",
-                        flex:'1 1 auto'
-                      }}>
-                        dsa
-                      </Box>
+                      {conversation ? (<>
+                        <Box flexDirection={'column'} display={'flex'} component={SimpleBar} sx={{
+                          minWidth:0,
+                          minHeight:0,
+                          padding:"40px 24px 24px",
+                          flex:'1 1 auto'
+                        }}>
+                          <MessageBox conversation={conversation}/>
+                        </Box>
+                      </>) : (<>
+                        <Stack direction={'column'} sx={{
+                          flex:'1 1 auto',
+                          position:'relative'
+                        }}>
+                          <LinearProgress/>
+                        </Stack>
+                      </>)}
+
                     </>) : (<>
                       <Stack direction={"column"} flexGrow={1} sx={{
                         height:'100%',
@@ -249,7 +363,45 @@ export default function ChatView(){
                     >
                     </InputBase >
                   </Stack>
-                  <Stack></Stack>
+                  {/*css-1lytpdc*/}
+                  <Stack direction={'column'} minHeight={0}>
+                    {conversation && (
+                      <Stack sx={{
+                        borderLeft:(theme) => `solid 1px ${theme.palette.divider}`,
+                        width:280,
+                        display:{
+                          lg:'flex',
+                          xs:'none'
+                        },
+                        flex:'1 1 auto',
+                        minHeight:0,
+                        transition:(theme) => theme.transitions.create(['width'],{
+                          duration:theme.transitions.duration.shorter
+                        })
+                      }}>
+                        <MuiSimpleBar>
+                          <>
+                            <Stack sx={{
+                              alignItems:'center',
+                              py:5
+                            }}>
+                              <Avatar src={'https://api-prod-minimal-v6.pages.dev/assets/images/avatar/avatar-2.webp'} sx={{
+                                width:96,
+                                height:96,
+                                mb:2
+                              }}></Avatar>
+                              <Typography variant={'subtitle1'}>Lucina Obrien</Typography>
+                              <Typography variant={'body2'} sx={{
+                                color:'text.secondary',
+                                mt:.5
+                              }}>CTO</Typography>
+                            </Stack>
+                            <ListButton>Information</ListButton>
+                          </>
+                        </MuiSimpleBar>
+                      </Stack>
+                    )}
+                  </Stack>
                 </Stack>
               </Stack>
             </Stack>

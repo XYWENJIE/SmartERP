@@ -40,7 +40,7 @@ public class UserLogin {
     private Boolean isSystem;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "USERNAME")
+    @JoinColumn(name = "USER_LOGIN_ID")
     private Set<Authorities> authorities;
 
     @OneToOne

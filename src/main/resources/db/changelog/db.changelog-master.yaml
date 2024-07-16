@@ -1,0 +1,115 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0
+      author: Benjamin
+      changes:
+        - createTable:
+            tableName: TAB_USER_LOGIN
+            columns:
+              - column:
+                  name: ID
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: ENABLED
+                  type: boolean
+              - column:
+                  name: IS_SYSTEM
+                  type: boolean
+              - column:
+                  name: USERNAME
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PASSWORD
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PERSONNEL_ID
+                  type: int
+        - createTable:
+            tableName: TAB_USER_LOGIN_HISTORY
+            columns:
+              - column:
+                  name: ID
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: FORM_DATE
+                  type: TIMESTAMP(6)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REMOTE_HOST
+                  type: varchar(255)
+              - column:
+                  name: SERVER_ROOT_URL
+                  type: varchar(255)
+              - column:
+                  name: USER_LOGIN_ID
+                  type: int
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: TAB_PERSONNEL
+            columns:
+              - column:
+                  name: ID
+                  type: int
+                  autoIncrement: true
+              - column:
+                  name: REAL_NAME
+                  type: varchar(255)
+              - column:
+                  name: EMAIL
+                  type: varchar(255)
+              - column:
+                  name: PHONE
+                  type: varchar(255)
+              - column:
+                  name: AVATAR_URL
+                  type: varchar(255)
+              - column:
+                  name: ROBOT
+                  type: boolean
+              - column:
+                  name: USER_LOGIN_ID
+                  type: int
+        - createTable:
+            tableName: TAB_TEAM
+            columns:
+              - column:
+                  name: ID
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: TEAM_NAME
+                  type: varchar(255)
+              - column:
+                  name: TEAM_TYPE
+                  type: varchar(100)
+        - insert:
+            tableName: TAB_USER_LOGIN
+            columns:
+              - column:
+                  name: USERNAME
+                  value: 'admin'
+              - column:
+                  name: PASSWORD
+                  value: '$2a$10$itI5NaJthkwlbRAL1HRScOdrAoLJsG8.2FENGJsfAmA6SlilBwAuO'
+              - column:
+                  name: ENABLED
+                  value: TRUE
+              - column:
+                  name: IS_SYSTEM
+                  value: TRUE

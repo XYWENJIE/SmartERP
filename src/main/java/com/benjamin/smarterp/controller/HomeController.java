@@ -1,7 +1,7 @@
 package com.benjamin.smarterp.controller;
 
 import com.benjamin.smarterp.domain.ResultStatus;
-import com.benjamin.smarterp.service.CommonUnit;
+import com.benjamin.smarterp.service.CommonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,10 +25,12 @@ import java.util.stream.Collectors;
 public class HomeController {
 
     private final AuthenticationManager authenticationManager;
+    private final CommonService commonService;
     private final JwtEncoder encoder;
 
-    public HomeController(AuthenticationManager authenticationManager, JwtEncoder encoder) {
+    public HomeController(AuthenticationManager authenticationManager, CommonService commonService, JwtEncoder encoder) {
         this.authenticationManager = authenticationManager;
+        this.commonService = commonService;
         this.encoder = encoder;
     }
 
@@ -38,7 +40,7 @@ public class HomeController {
 
     @RequestMapping("version")
     public String version(){
-        return CommonUnit.getVersion();
+        return commonService.getVersion();
     }
 
     @PostMapping("/login")
