@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0" author="Benjamin">
+        <createTable tableName="TAB_USER_LOGIN">
+            <column name="id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ENABLED" type="boolean" defaultValueBoolean="true"/>
+            <column name="IS_SYSTEM" type="boolean" defaultValueBoolean="false"/>
+            <column name="USERNAME" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="PASSWORD" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PERSONNEL_ID" type="int"/>
+        </createTable>
+        <createTable tableName="TAB_USER_LOGIN_HISTORY">
+            <column name="ID" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="FORM_DATE" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REMOTE_HOST" type="varchar(255)"/>
+            <column name="SERVER_ROOT_URL" type="varchar(255)"/>
+            <column name="USER_LOGIN_ID" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="TAB_PERSONNEL">
+            <column name="ID" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="REAL_NAME" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EMAIL" type="varchar(255)"/>
+            <column name="PHONE" type="varchar(255)"/>
+            <column name="AVATAR_URL" type="varchar(255)"/>
+            <column name="ROBOT" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USER_LOGIN_ID" type="int"/>
+        </createTable>
+        <createTable tableName="TAB_TEAM">
+            <column name="ID" autoIncrement="true" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="TEAM_NAME" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TEAM_TYPE" type="varchar(100)"/>
+        </createTable>
+        <insert tableName="TAB_USER_LOGIN">
+            <column name="USERNAME" value="admin"/>
+            <column name="PASSWORD" value="$2a$10$itI5NaJthkwlbRAL1HRScOdrAoLJsG8.2FENGJsfAmA6SlilBwAuO"/>
+            <column name="ENABLED" valueBoolean="true"/>
+            <column name="IS_SYSTEM" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
