@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {toast} from 'sonner';
 
 const api = axios.create({
   baseURL:'http://localhost:8080',
@@ -23,6 +24,9 @@ api.interceptors.response.use((response) => {
   if(error.response.status === 401){
     localStorage.removeItem("token");
     window.location.href = '/login'
+  }
+  if(error.response.status === 500){
+    toast.error(error.response.data.message,{duration:20000});
 
   }
   return Promise.reject(error);

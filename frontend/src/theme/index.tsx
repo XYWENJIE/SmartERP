@@ -29,6 +29,9 @@ declare module '@mui/material/styles' {
           height:number
         }
       }
+    },
+    customShadows:{
+      z8:string
     }
   }
 }
