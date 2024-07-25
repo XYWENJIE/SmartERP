@@ -56,11 +56,39 @@
             </column>
             <column name="TEAM_TYPE" type="varchar(100)"/>
         </createTable>
+        <createTable tableName="TAB_USER_TEAM">
+            <column name="PERSONNEL_ID" type="int"/>
+            <column name="TEAM_ID" type="int"/>
+        </createTable>
         <insert tableName="TAB_USER_LOGIN">
             <column name="USERNAME" value="admin"/>
             <column name="PASSWORD" value="$2a$10$itI5NaJthkwlbRAL1HRScOdrAoLJsG8.2FENGJsfAmA6SlilBwAuO"/>
             <column name="ENABLED" valueBoolean="true"/>
             <column name="IS_SYSTEM" valueBoolean="true"/>
+        </insert>
+        <insert tableName="TAB_TEAM">
+            <column name="TEAM_NAME" value="管理员团队"/>
+            <column name="TEAM_TYPE" value="SYSTEM_ADMIN"/>
+        </insert>
+        <insert tableName="TAB_PERSONNEL">
+            <column name="EMAIL" value="xywenjie@outlook.com"/>
+            <column name="REAL_NAME" value="黄文杰"/>
+            <column name="ROBOT" valueBoolean="false"/>
+            <column name="AVATAR_URL" value="https://pub-c5e31b5cdafb419fb247a8ac2e78df7a.r2.dev/mock/assets/images/avatar/avatar-1.webp"/>
+            <column name="USER_LOGIN_ID" value="1"/>
+        </insert>
+        <insert tableName="TAB_PERSONNEL">
+            <column name="REAL_NAME" value="SmartAssist"/>
+            <column name="ROBOT" valueBoolean="true"/>
+            <column name="AVATAR_URL" value="http://localhost:8080/a821c0ab-f8a0-5284-a714-679e578992f5_0.png"/>
+        </insert>
+        <insert tableName="TAB_USER_TEAM">
+            <column name="PERSONNEL_ID" value="1"/>
+            <column name="TEAM_ID" value="1"/>
+        </insert>
+        <insert tableName="TAB_USER_TEAM">
+            <column name="PERSONNEL_ID" value="2"/>
+            <column name="TEAM_ID" value="1"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

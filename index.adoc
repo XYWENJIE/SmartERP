@@ -76,10 +76,19 @@ create table TAB_PERSONNEL (
 == 4.关键功能
 
 === 4.1 功能列表
+- dashboard
 - 用户管理
 - 财务管理
 - 许可证管理
 - 聊天工具
+
+=== 4.1.1 Dashboard
+展示APP基本情况
+APP安装地区等信息
+
+分析
+每周销售、新用户、采购订单、消息
+当前访问、网站访问
 
 === 4.1.1 用户管理
 [java]
@@ -109,15 +118,22 @@ create table TAB_CHAT_MESSAGE(
     SEND_TIME DATETIME NOT NULL,
     MESSAGE_TYPE ENUM('TEXT','IMAGE','FILE') NOT NULL
 );
-
-create table TAB_CHAT_ROOM(
+----
+聊天会话列表，创建会话名称默认是对方名字
+[source,sql]
+----
+create table TAB_CONVERSATION(
     ID INT PRIMARY KEY,
-    ROOM_NAME VARBINARY(255) NOT NULL,
+    CONVERSATION_NAME VARBINARY(255) NOT NULL,
     CREATE_TIME DATETIME NOT NULL,
     LAST_ACTIVE_TIME DATETIME NOT NULL
 );
 
-create TABLE TAB_CHAT_USER_PA()
+create TABLE TAB_CONVERSATION_PERSONNEL_PARTICIPATION (
+    ID int primary key ,
+    PERSONNEL_ID INT NOT NULL,
+    CONVERSATION_ID INT NOT NULL,
+)
 ----
 
 === 4.2 核心业务流程
