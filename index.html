@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.22">
+<meta name="generator" content="Asciidoctor 2.0.23">
 <title>SmartERP</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -600,6 +600,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li>
 <p>Spring Boot: 用于简化Spring应用的初始搭建以及开发过程的框架。</p>
 </li>
+<li>
+<p>Spring Security：用于实现安全认证和授权</p>
+</li>
+<li>
+<p>Hibernate: 作为ORM工具，Hibernate将Java对象映射到数据库表，简化了数据持久化过程</p>
+</li>
+<li>
+<p>Spring Data JPA: 与Hibernate结合使用提供简洁的数据访问层实现。</p>
+</li>
+<li>
+<p>Spring WebSocket: 用于实现实时通信，支持聊天工具等功能的</p>
+</li>
 </ul>
 </div>
 </div>
@@ -611,6 +623,41 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>MySQL/PostgreSQL: 关系型数据库，用于存储结构化数据。</p>
 </li>
 </ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_3_1_基本数据结构">2.3.1 基本数据结构</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span style="color:#B06;font-weight:bold">create</span> <span style="color:#339;font-weight:bold">table</span> TAB_USER_LOGIN(
+    ID <span style="color:#0a8;font-weight:bold">int</span> <span style="color:#088;font-weight:bold">primary</span> <span style="color:#339;font-weight:bold">key</span>,
+    USERNAME <span style="color:#0a8;font-weight:bold">varchar</span>(<span style="color:#00D">255</span>) <span style="color:#080;font-weight:bold">not</span> <span style="color:#069">null</span> ,
+    PASSWORD <span style="color:#0a8;font-weight:bold">varchar</span>(<span style="color:#00D">255</span>) <span style="color:#080;font-weight:bold">not</span> <span style="color:#069">null</span>,
+    USER_INFO_ID <span style="color:#0a8;font-weight:bold">int</span>,
+)
+
+<span style="color:#B06;font-weight:bold">create</span> <span style="color:#339;font-weight:bold">table</span> TAB_USER_TEAM (
+        USER_ID <span style="color:#0a8;font-weight:bold">integer</span> <span style="color:#080;font-weight:bold">not</span> <span style="color:#069">null</span>,
+        TEAM_ID <span style="color:#0a8;font-weight:bold">integer</span> <span style="color:#080;font-weight:bold">not</span> <span style="color:#069">null</span>
+    )
+
+<span style="color:#B06;font-weight:bold">create</span> <span style="color:#339;font-weight:bold">table</span> TAB_TEAM(
+    ID <span style="color:#0a8;font-weight:bold">int</span> <span style="color:#088;font-weight:bold">primary</span> <span style="color:#339;font-weight:bold">key</span>,
+    TEAM_NAME <span style="color:#0a8;font-weight:bold">varchar</span>(<span style="color:#00D">255</span>) <span style="color:#080;font-weight:bold">not</span> <span style="color:#069">null</span>,
+    TEAN_TYPE <span style="color:#0a8;font-weight:bold">varchar</span>(<span style="color:#00D">255</span>)
+)
+
+<span style="color:#B06;font-weight:bold">create</span> <span style="color:#339;font-weight:bold">table</span> TAB_PERSONNEL (
+        ID <span style="color:#0a8;font-weight:bold">integer</span> generated <span style="color:#080;font-weight:bold">by</span> <span style="color:#088;font-weight:bold">default</span> <span style="color:#080;font-weight:bold">as</span> identity,
+        AVATAR_URL <span style="color:#0a8;font-weight:bold">varchar</span>(<span style="color:#00D">255</span>),
+        EMAIL <span style="color:#0a8;font-weight:bold">varchar</span>(<span style="color:#00D">255</span>),
+        PHONE <span style="color:#0a8;font-weight:bold">varchar</span>(<span style="color:#00D">255</span>),
+        REAL_NAME <span style="color:#0a8;font-weight:bold">varchar</span>(<span style="color:#00D">255</span>),
+        ROBOT <span style="color:#0a8;font-weight:bold">boolean</span>,
+        USER_LOGIN_ID <span style="color:#0a8;font-weight:bold">integer</span>,
+        <span style="color:#088;font-weight:bold">primary</span> <span style="color:#339;font-weight:bold">key</span> (id)
+    )</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -632,7 +679,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="sect2">
 <h3 id="_3_3_数据流和控制流">3.3 数据流和控制流</h3>
-
+<div class="paragraph">
+<p>数据流：采用RESTfull API进行前后端数据交互，使用JSON格式进行数据传输。
+控制流：前端发送请求到后端API，后端处理请求并返回响应，前端根据响应更新UI。</p>
+</div>
 </div>
 </div>
 </div>
@@ -644,6 +694,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
+<p>dashboard</p>
+</li>
+<li>
 <p>用户管理</p>
 </li>
 <li>
@@ -652,7 +705,77 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li>
 <p>许可证管理</p>
 </li>
+<li>
+<p>聊天工具</p>
+</li>
 </ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_4_1_1_dashboard">4.1.1 Dashboard</h3>
+<div class="paragraph">
+<p>展示APP基本情况
+APP安装地区等信息</p>
+</div>
+<div class="paragraph">
+<p>分析
+每周销售、新用户、采购订单、消息
+当前访问、网站访问</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_4_1_1_用户管理">4.1.1 用户管理</h3>
+<div class="sect3">
+<h4 id="_4_1_4_聊天工具">4.1.4 聊天工具</h4>
+<div class="paragraph">
+<p>聊天工具魔模块旨在提供企业内部和客服的沟通平台，支持实时信息传递、文件功共享和AI聊天功能。该模块将集成LLM模型以提供智能化沟通体验。</p>
+</div>
+<div class="paragraph">
+<p>功能特性：
+实现消息传递：支持文本、图片、视频和文件传输。
+一对一或群聊：用户可以创建私人聊天或群组进行团队协作
+历史消息记录：所有聊天记录都将被保存，方便用户随时查阅
+集成通知？</p>
+</div>
+<div class="paragraph">
+<p>AI聊天功能：
+SmartAssist：提供提供名为SmartAssist的LLM智能AI助手，用户可以直接与AI助手进行交互，获取即使帮助和信息。</p>
+</div>
+<div class="sect4">
+<h5 id="_4_1_4_1_技术实现">4.1.4.1 技术实现：</h5>
+<div class="paragraph">
+<p>前端：使
+后端：后端提供了REST API接口，核心接口分别 <code>POST:/chat/message</code> <code>GET:/chat/</code></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_4_1_4_2_数据库设计结构">4.1.4.2 数据库设计结构</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span style="color:#B06;font-weight:bold">create</span> <span style="color:#339;font-weight:bold">table</span> TAB_CHAT_MESSAGE(
+    ID <span style="color:#0a8;font-weight:bold">INT</span> <span style="color:#088;font-weight:bold">PRIMARY</span> <span style="color:#339;font-weight:bold">KEY</span>,
+    CONTENT <span style="color:#0a8;font-weight:bold">TEXT</span> <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#069">NULL</span>,
+    SEND_TIME <span style="color:#0a8;font-weight:bold">DATETIME</span> <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#069">NULL</span>,
+    MESSAGE_TYPE <span style="color:#0a8;font-weight:bold">ENUM</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">TEXT</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">IMAGE</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">FILE</span><span style="color:#710">'</span></span>) <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#069">NULL</span>
+);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>聊天会话列表，创建会话名称默认是对方名字</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span style="color:#B06;font-weight:bold">create</span> <span style="color:#339;font-weight:bold">table</span> TAB_CONVERSATION(
+    ID <span style="color:#0a8;font-weight:bold">INT</span> <span style="color:#088;font-weight:bold">PRIMARY</span> <span style="color:#339;font-weight:bold">KEY</span>,
+    CONVERSATION_NAME VARBINARY(<span style="color:#00D">255</span>) <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#069">NULL</span>,
+    CREATE_TIME <span style="color:#0a8;font-weight:bold">DATETIME</span> <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#069">NULL</span>,
+    LAST_ACTIVE_TIME <span style="color:#0a8;font-weight:bold">DATETIME</span> <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#069">NULL</span>
+);
+
+<span style="color:#B06;font-weight:bold">create</span> <span style="color:#339;font-weight:bold">TABLE</span> TAB_CHAT_USER_PA()</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -747,6 +870,28 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_8_1_安全措施">8.1 安全措施</h3>
 
+</div>
+<div class="sect2">
+<h3 id="_8_2_防止作弊的措施">8.2 防止作弊的措施</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>财务信息验证: 实施严格的财务信息验证流程，包括与第三方财务系统或银行进行核对。</p>
+</li>
+<li>
+<p>人工审核: 由专业的财务人员对提交的财务信息进行人工审核，以识别潜在的虚假信息。</p>
+</li>
+<li>
+<p>交叉验证: 通过交叉验证用户提供的财务报表和其他业务数据，如销售记录、采购订单等，来确保信息的准确性。</p>
+</li>
+<li>
+<p>定期审计: 定期对已批准的许可证延长案例进行审计，以确保合规性。</p>
+</li>
+<li>
+<p>智能分析: 使用数据分析工具来检测异常模式或潜在的欺诈行为。</p>
+</li>
+</ul>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_8_2_性能优化">8.2 性能优化</h3>
@@ -881,7 +1026,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-06-17 17:43:34 +0800
+Last updated 2024-07-20 15:17:57 +0800
 </div>
 </div>
 <script>

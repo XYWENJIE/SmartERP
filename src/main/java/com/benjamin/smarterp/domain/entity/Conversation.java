@@ -1,13 +1,29 @@
 package com.benjamin.smarterp.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
+/**
+ * 谈话JPA实体类
+ */
 @Entity
 @Table(name = "TAB_CONVERSATION")
 public class Conversation {
+
+    public Conversation() {
+    }
+
+    @Builder
+    public Conversation(Set<ConversationMessage> conversationMessages, String conversationName, LocalDateTime createTime, String id, LocalDateTime lastActiveTime) {
+        this.conversationMessages = conversationMessages;
+        this.conversationName = conversationName;
+        this.createTime = createTime;
+        this.id = id;
+        this.lastActiveTime = lastActiveTime;
+    }
 
     @Id
     @Column(name = "ID")
@@ -17,10 +33,10 @@ public class Conversation {
     private String conversationName;
 
     @Column(name = "CREATE_TIME")
-    private LocalDateTime createTime;
+    private LocalDateTime createTime = LocalDateTime.now();
 
     @Column(name = "LAST_ACTIVE_TIME")
-    private LocalDateTime lastActiveTime;
+    private LocalDateTime lastActiveTime = LocalDateTime.now();
 
     @OneToMany
     @JoinColumn(name = "CONVERSATION_ID")

@@ -30,15 +30,17 @@ public class ChatController {
     private final ConversationRepository conversationRepository;
     private final ConversationParticipationRepository conversationParticipationRepository;
     private final ConversationMessageRepository conversationMessageRepository;
+    private final NotificationRepository notificationRepository;
     private final CommonService commonService;
 
     public ChatController(ChatMessageRepository chatMessageRepository,
-                          PersonnelRepository personnelRepository, ConversationRepository conversationRepository, ConversationParticipationRepository conversationParticipationRepository, ConversationMessageRepository conversationMessageRepository, CommonService commonService) {
+                          PersonnelRepository personnelRepository, ConversationRepository conversationRepository, ConversationParticipationRepository conversationParticipationRepository, ConversationMessageRepository conversationMessageRepository, NotificationRepository notificationRepository, CommonService commonService) {
         this.chatMessageRepository = chatMessageRepository;
         this.personnelRepository = personnelRepository;
         this.conversationRepository = conversationRepository;
         this.conversationParticipationRepository = conversationParticipationRepository;
         this.conversationMessageRepository = conversationMessageRepository;
+        this.notificationRepository = notificationRepository;
         this.commonService = commonService;
     }
 
@@ -67,11 +69,8 @@ public class ChatController {
     @PostMapping("conversation")
     public ResultStatus<String> createConversation(@RequestBody @Valid Request.CreateConversation createConversation){
         log.info("创建聊天会话{}",createConversation);
-        Conversation conversation = new Conversation();
-        conversation.setId(UUID.randomUUID().toString());
-        conversation.setConversationName(createConversation.contacts().toString());
-        conversation.setCreateTime(LocalDateTime.now());
-        conversation.setLastActiveTime(LocalDateTime.now());
+        Conversation conversation = Conversation.builder().id(UUID.randomUUID()
+                .toString()).conversationName(createConversation.contacts().toString()).build();
         conversationRepository.save(conversation);
         Personnel currentPersonnel = commonService.authenticationConvert();
         ConversationParticipation currentParticipation = new ConversationParticipation();
@@ -93,7 +92,19 @@ public class ChatController {
             conversationPersonnelParticipation.setPersonnel(personnel);
             conversationPersonnelParticipation.setConversation(conversation);
             this.conversationParticipationRepository.save(conversationPersonnelParticipation);
-            log.info("保存聊天谈话参与人信息");
+            log.info("保存聊天谈话参与人信息,并更新通知聊天信息");
+            Optional<Notification> optional = this.notificationRepository.findBySenderUserIdAndType(currentPersonnel.getUserLogin().getId(), Notification.Type.CHAT);
+            if(optional.isPresent()){
+                Notification notification = optional.get();
+                //this.conversationMessageRepository
+                notification.setContent("您有{}条未读消息");
+                this.notificationRepository.save(notification);
+            }else{
+                Notification notification = Notification.builder()
+                        .senderUser(currentPersonnel.getUserLogin()).receiverUser(personnel.getUserLogin())
+                        .type(Notification.Type.CHAT).status(Notification.Status.UNREAD).content("您有1条未读消息").build();
+                this.notificationRepository.save(notification);
+            }
             if(personnel.getRobot()){
                 log.info("机器人聊天");
                 ConversationMessage conversationMessage = new ConversationMessage();

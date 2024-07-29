@@ -69,10 +69,10 @@ class SmartErpApplicationTests {
 		log.info(resultStatus.toString());
 
 		log.info("获取谈话内容{}",resultStatus.getResult());
-		this.sendMessage(resultStatus.getResult());
+		this.openMessage(resultStatus.getResult());
 	}
 
-	private void sendMessage(String conversationId) throws Exception{
+	private void openMessage(String conversationId) throws Exception{
 		MvcResult mvcResult = this.mockMvc.perform(get("/chat/conversation/"+conversationId).with(jwt().jwt(jwt))).andExpect(status().isOk()).andReturn();
 		String body = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
 		log.info(body);
