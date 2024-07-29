@@ -142,7 +142,10 @@ export default function Contacts(){
           <Stack direction="row" spacing={4} sx={{
             padding:'20px 20px 0px',
           }}>
-            <Badge color="success" variant="dot">
+            <Badge color="success" variant="online" anchorOrigin={{
+                vertical:'bottom',
+                horizontal:'right'
+              }}>
               <Avatar src="/images/avatars/avatar_25.jpg" sx={{
                 width:'48px',
                 height:'48px'

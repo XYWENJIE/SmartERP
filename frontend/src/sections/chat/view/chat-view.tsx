@@ -2,17 +2,12 @@ import {
   alpha,
   Autocomplete,
   Avatar,
-  Badge,
   Box,
-  Button, Chip,
-  Container,
+  Chip,
   IconButton,
-  Input, InputAdornment, InputBase, LinearProgress, ListItemButton, ListItemText, Skeleton,
-  Stack, TextField,
+  InputBase, LinearProgress, ListItemButton, Stack, TextField,
   Typography,
 } from '@mui/material';
-import { AccountCircle, ChevronLeft, PersonAdd } from '@mui/icons-material';
-import theme from '../../../theme';
 import Contacts from '../contacts.tsx';
 import { useResponsive } from '../../../hooks/use-responsive.ts';
 import { Icon } from '@iconify/react';
@@ -179,7 +174,7 @@ export default function ChatView(){
             <Typography variant="h4" sx={{
               marginBottom:'40px'
             }}>
-              Chat
+              Chat(聊天)
             </Typography>
             {/*主题内容*/}
             <Stack direction="row" spacing={0} useFlexGap={false} sx={{

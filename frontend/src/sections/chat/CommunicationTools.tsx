@@ -89,7 +89,7 @@ export default function CommunicationTools(){
   return (
     <>
       <Stack direction={'row'} gap={2}>
-        <Badge color={'success'} variant={'dot'} >
+        <Badge color={'success'} variant={"online"} >
           <Avatar variant={'circular'} src={'/images/avatars/avatar_25.jpg'}></Avatar>
         </Badge>
         <ListItemText aria-multiline={true}>

@@ -4,7 +4,7 @@ import Router from './routes/sections.tsx';
 import { useScrollToTop } from './hooks/use-scroll-to-top.ts';
 import MyToaster from "./utils/MyToaster.tsx";
 import React from "react";
-import {StyledToaster, ToasterClassName} from "./components/scrollbar/styles.ts";
+import {Snackbar, ToasterClassName} from "./components/scrollbar/styles.ts";
 import {Toaster} from "sonner";
 import {Icon} from "@iconify/react";
 
@@ -15,7 +15,7 @@ function App() {
   return (
     <ThemeProvider>
       <Router/>
-        <StyledToaster
+        <Snackbar
             expand={true}
             gap={12}
             offset={16}
@@ -43,7 +43,10 @@ function App() {
               }
             }}
             icons={{
-                loading:<span></span>,
+                loading:<span className={ToasterClassName.loadingIcon}></span>,
+                info:<Icon className={ToasterClassName.iconSvg} icon={"solar:info-circle-bold"}></Icon>,
+                success:<Icon className={ToasterClassName.iconSvg} icon={"solar:check-circle-bold"}></Icon>,
+                warning:<Icon className={ToasterClassName.iconSvg} icon={"solar:danger-triangle-bold"}></Icon>,
                 error:<Icon className={ToasterClassName.iconSvg} icon={'solar:danger-bold'}></Icon>
             }}
         />

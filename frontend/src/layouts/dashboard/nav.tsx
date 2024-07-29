@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { usePathname } from '../../routes';
-import { alpha, Avatar, Box, Collapse, Drawer, ListItemButton, ListSubheader, Stack, Typography } from '@mui/material';
+import { alpha, Avatar, Box, ButtonBase, Collapse, Drawer, ListItemButton, ListSubheader, Stack, styled, Theme, Typography } from '@mui/material';
 import { useResponsive } from '../../hooks/use-responsive.ts';
 import Scrollbar from '../../components/scrollbar';
 import SvgColor from '../../components/svg-color';
@@ -8,6 +8,7 @@ import { RouterLink } from '../../routes/components';
 import { Icon } from '@iconify/react';
 import theme from '../../theme';
 import Iconify from '../../components/iconify/iconify.tsx';
+import navigationBarCssProps from "../../components/navigation/navigationBarCss.ts";
 
 interface NavProps{
   openNav:boolean,
@@ -34,8 +35,17 @@ const navConfig = [
   },
   {
     title: 'user',
-    path: '/user',
     icon: icon('ic_user'),
+    children:[
+      {
+        title:"list",
+        path:'/user'
+      },
+      {
+        title:"create",
+        path:"/user/create"
+      }
+    ]
   },
   {
     title: 'product',
@@ -142,7 +152,16 @@ const Nav:React.FC<NavProps> = ({openNav,onCloseNav}) => {
           </ListSubheader>
           <Collapse in={true}>
             {navConfig.map((item) => (
-              <NavItem key={item.title} item={item}/>
+              <Box 
+              component={"li"} 
+              className='mnl__nav__li'
+              sx={{
+                display:"flex",
+                flexDirection:"column",
+              }}
+              >
+                <NavItem key={item.title} item={item}/>
+              </Box>
             ))}
           </Collapse>
         </Box>
@@ -202,16 +221,58 @@ const Nav:React.FC<NavProps> = ({openNav,onCloseNav}) => {
   )
 }
 
+interface ListButtonPros {
+  active?:boolean;
+  depth?:number;
+  theme?:Theme;
+}
+
+const ListButton = styled(ButtonBase,{
+  shouldForwardProp:(prop) => true
+})<ListButtonPros>(({theme,depth}) => {
+  const isRoot = depth === 1;
+  
+  const style = {
+    item:{
+      width:'100%'
+    }
+  }
+  // 源代码depth: 1才返回样式
+  return {
+    ...(isRoot && {
+      ...style.item,
+      minHeight:44,
+      [`& .${navigationBarCssProps.item.icon}`]:{
+      width:"",
+      height:'',
+      margin:""
+      }
+    })
+  }
+})
+
 // @ts-ignore
 const NavItem = ({item}) => {
   const pathname = usePathname();
 
+  const hasLink = Boolean(item.path);
+  const [open,setOpen] = useState(false);
+
+  const handleClick = () => {
+      if(!hasLink){
+        setOpen(!open);
+      }
+  }
+
   const active = item.path === pathname;
 
   return (
+    <>
     <ListItemButton
-      component={RouterLink}
+      className={"mnl__nav__item"}
+      component={item.path ? RouterLink : "div"}
       href={item.path}
+      onClick={handleClick}
       sx={{
         minHeight:44,
         borderRadius:0.75,
@@ -219,6 +280,10 @@ const NavItem = ({item}) => {
         textTransform:'capitalize',
         color:'text.secondary',
         fontWeight:'fontWeightMedium',
+        ...(open && {
+          color:(theme) => theme.palette.text.primary,
+          backgroundColor:(theme) => theme.palette.action.selected
+        }),
         ...(active && {
           color:'primary.main',
           fontWeight:'fontWeightSemiBold',
@@ -233,7 +298,50 @@ const NavItem = ({item}) => {
         {item.icon}
       </Box>
       <Box component="span">{item.title}</Box>
+      {!hasLink && (<Box component={Icon} icon="eva:arrow-ios-forward-fill" sx={{
+          width:16,
+          height:16,
+          flexShrink:0,
+          marginLeft:"6px",
+          display:"inline-flex"
+        }}/>)}
+      
     </ListItemButton>
+    {!hasLink && (
+      <Collapse  in={open} sx={{
+        pl:'24px',
+        ['& .mnl__nav__ul']:{
+          position:'relative',
+          paddingLeft:'12px',
+          "&::before":{
+            top:0,
+            left:0,
+            width:"2px",
+            content:'""',
+            position:'absolute',
+            bottom:'11px',
+            bgcolor:'#EDEFF2'
+          }
+        }
+      }}>
+  
+          <Box component={"ul"} className='mnl__nav__ul' sx={{
+            display:'flex',
+            flexDirection:'column'
+          }}>
+            {item.children.map((tree:any) => (<Box component={'li'} key={tree.title} sx={{mt:1}}>
+              <ListButton depth={2} className={`${navigationBarCssProps.item}`}>
+                  <Box className="mnl__nav__item__texts">
+                      <Box className="mnl__nav__item__title">{tree.title}</Box>
+                  </Box>
+              </ListButton>
+            </Box>))}
+          </Box>
+      </Collapse>
+)
+}
+    </>
+    
   )
 }
 

@@ -1,7 +1,6 @@
-import { alpha, styled } from '@mui/material';
+import { alpha, styled, Theme } from '@mui/material';
 import SimpleBar from 'simplebar-react';
 import {Toaster} from "sonner";
-import {Theme} from "@mui/material/styles/createTheme";
 
 export const StyledRootScrollbar = styled('div')(()=>({
   flexGrow:1,
@@ -26,6 +25,20 @@ export const StyledScrollbar = styled(SimpleBar)(({theme}) => ({
   },
 }));
 
+const hexToRgba = (hexColor:string,alpha:number=1) => {
+  if(hexColor.startsWith("#")){
+    hexColor = hexColor.substring(1);
+    if (hexColor.length === 3) {
+      hexColor = hexColor.split('').map((color) => color + color).join('');
+    }
+    const r = parseInt(hexColor.slice(0, 2), 16);
+    const g = parseInt(hexColor.slice(2, 4), 16);
+    const b = parseInt(hexColor.slice(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+  return `rgba(${hexColor} / ${alpha})`
+}
+
 export const ToasterClassName = {
   root:'toaster__root',
   toast:'toaster__toast',
@@ -48,7 +61,7 @@ export const ToasterClassName = {
   closeBtnVisible:'[data-close-button="true"]'
 }
 
-export const StyledToaster = styled(Toaster)(({theme}:{theme:Theme}) => ({
+export const Snackbar = styled(Toaster)(({theme}) => ({
   width:300,
   [`& .${ToasterClassName.toast}`]:{
     gap:12,
@@ -117,7 +130,37 @@ export const StyledToaster = styled(Toaster)(({theme}:{theme:Theme}) => ({
     backgroundColor:theme.palette.background.paper,
     [`& .${ToasterClassName.icon}`]:{
       color:theme.palette.error.main,
-      backgroundColor:`rgba(${theme.palette.error.main} / 0.08)`
+      backgroundColor:hexToRgba(theme.palette.error.main,0.08)
+    }
+  },
+  [`& .${ToasterClassName.success}`]:{
+    padding:theme.spacing(.5,1,.5,.5),
+    boxShadow:theme.customShadows.z8,
+    color:theme.palette.text.primary,
+    backgroundColor:theme.palette.background.paper,
+    [`& .${ToasterClassName.icon}`]:{
+      color:theme.palette.success.main,
+      backgroundColor:hexToRgba(theme.palette.success.main,0.08)
+    }
+  },
+  [`& .${ToasterClassName.warning}`]:{
+    padding:theme.spacing(.5,1,.5,.5),
+    boxShadow:theme.customShadows.z8,
+    color:theme.palette.text.primary,
+    backgroundColor:theme.palette.background.paper,
+    [`& .${ToasterClassName.icon}`]:{
+      color:theme.palette.warning.main,
+      backgroundColor:hexToRgba(theme.palette.warning.main,.08)
+    }
+  },
+  [`& .${ToasterClassName.info}`]:{
+    padding:theme.spacing(.5,1,.5,.5),
+    boxShadow:theme.customShadows.z8,
+    color:theme.palette.text.primary,
+    backgroundColor:theme.palette.background.paper,
+    [`& .${ToasterClassName.icon}`]:{
+      color:theme.palette.info.main,
+      backgroundColor:hexToRgba(theme.palette.info.main,.08)
     }
   }
 }));

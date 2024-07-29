@@ -1,7 +1,26 @@
 import { alpha } from '@mui/material/styles';
 import { outlinedInputClasses } from '@mui/material/OutlinedInput';
+import {SxProps} from "@mui/material";
 
 // ----------------------------------------------------------------------
+
+const Zm = (theme):SxProps => {
+  return {
+    width:10,
+    zIndex:9,
+    padding:0,
+    height:10,
+    minWidth:'auto',
+    '&::before, &::after':{
+      content:"''",
+      borderRadius:1,
+      backgroundColor:theme.palette.common.white
+    },
+    "&.MuiBadge-invisible":{
+      transform:'unset'
+    }
+  }
+}
 
 export function overrides(theme:any) {
   return {
@@ -56,6 +75,78 @@ export function overrides(theme:any) {
           background: 'transparent',
         },
       },
+    },
+    MuiBadge:{
+      variants:[
+        {
+          props:{variant:'online'},
+          style:{
+            '& .MuiBadge-badge':{
+              ...Zm(theme),
+              backgroundColor:theme.palette.success.main
+            }
+          }
+        },
+        {
+          props: {variant: "alway"},
+          style: {
+            '& .MuiBadge-badge':{
+              ...Zm(theme),
+              backgroundColor: theme.palette.warning.main,
+              '&::before':{
+                width:2,
+                height:4,
+                transform:'translateX(1px) translateY(-1px)'
+              },
+              "&::after":{
+                width:2,
+                height:4,
+                transform:"translateY(1px) rotate(125deg)"
+              }
+            }
+          }
+        },
+        {
+          props:{variant: "busy"},
+          style:{
+            "& .MuiBadge-badge":{
+              ...Zm(theme),
+              backgroundColor: theme.palette.error.main,
+              "&::before":{
+                width:6,
+                height: 2
+              }
+            }
+          }
+        },
+        {
+          props:{variant: "offline"},
+          style:{
+            "& .MuiBadge-badge":{
+              ...Zm(theme),
+              backgroundColor: theme.palette.text.disabled,
+              "&::before":{
+                width:6,
+                height: 2,
+                borderRadius:"50%"
+              }
+            }
+          }
+        },
+        {
+          props:{variant: "invisible"},
+          style:{
+            "& .MuiBadge-badge":{
+              display:'none'
+            }
+          }
+        }
+      ],
+      styleOverrides:{
+        dot:{
+          borderRadius:'50%'
+        }
+      }
     },
     MuiButton: {
       styleOverrides: {
