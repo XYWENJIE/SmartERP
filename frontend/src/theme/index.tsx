@@ -1,6 +1,6 @@
 import { ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
 import { createTheme, CssBaseline } from '@mui/material';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { overrides } from './overrides.ts';
 import { palette } from './palette.ts';
 import { typography } from './typography.ts';
@@ -11,6 +11,12 @@ interface ThemeProviderProps {
   children:React.ReactNode;
 }
 
+declare module '@mui/material/Badge' {
+  interface BadgePropsVariantOverrides {
+    online:true
+  }
+}
+
 declare module '@mui/material/styles' {
   interface Theme {
     layout:{
@@ -19,6 +25,9 @@ declare module '@mui/material/styles' {
           height:number
         }
       }
+    },
+    customShadows:{
+      z8:string
     }
   }
 
@@ -33,6 +42,10 @@ declare module '@mui/material/styles' {
     customShadows:{
       z8:string
     }
+  }
+
+  interface BadgeVariants{
+    online:React.CSSProperties
   }
 }
 

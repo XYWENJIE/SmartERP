@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { usePathname } from '../../routes';
 import { alpha, Avatar, Box, ButtonBase, Collapse, Drawer, ListItemButton, ListSubheader, Stack, styled, Theme, Typography } from '@mui/material';
 import { useResponsive } from '../../hooks/use-responsive.ts';
-import Scrollbar from '../../components/scrollbar';
+import Scrollbar from '../../components/Scrollbar.tsx';
 import SvgColor from '../../components/svg-color';
 import { RouterLink } from '../../routes/components';
 import { Icon } from '@iconify/react';
-import theme from '../../theme';
-import Iconify from '../../components/iconify/iconify.tsx';
 import navigationBarCssProps from "../../components/navigation/navigationBarCss.ts";
 
 interface NavProps{
@@ -99,7 +97,7 @@ const Nav:React.FC<NavProps> = ({openNav,onCloseNav}) => {
         display:'flex',
         borderRadius:1.5,
         alignItems:'center',
-        bgcolor:(theme) => alpha(theme.palette.grey[500],0.12)
+        bgcolor:(theme:Theme) => alpha(theme.palette.grey[500],0.12)
       }}
     >
       <Avatar src={account.photoURL} alt="photoURL"/>
@@ -112,7 +110,10 @@ const Nav:React.FC<NavProps> = ({openNav,onCloseNav}) => {
 
   /*管理项目*/
   const renderMenu = (
-    <Stack component="nav" spacing={0.5} sx={{px:2}}>
+    <Stack component="nav" spacing={0.5} sx={(theme:Theme) => ({
+      px:2,
+      ...ZZ(theme)
+    })}>
       <Box className={"mnl__nav__ul"} key={"Overview"} component={"ul"} display={'flex'} flexDirection={'column'} gap={"4px"} sx={{
       }}>
         <Box component={"li"} className={"mnl__nav__li"}>
@@ -124,15 +125,15 @@ const Nav:React.FC<NavProps> = ({openNav,onCloseNav}) => {
              backgroundColor:'transparent',
             alignContent:'center',
             fontWeight:700,
-            color:(theme) => theme.palette.text.disabled,
-            padding:(theme) => theme.spacing(2,1,1,1.5),
-            fontSize:(theme) => theme.typography.pxToRem(11),
-            transition:(theme) => theme.transitions.create(['color','padding-left'],{
+            color:(theme:Theme) => theme.palette.text.disabled,
+            padding:(theme:Theme) => theme.spacing(2,1,1,1.5),
+            fontSize:(theme:Theme) => theme.typography.pxToRem(11),
+            transition:(theme:Theme) => theme.transitions.create(['color','padding-left'],{
               duration:theme.transitions.duration.standard
             }),
             "&:hover":{
               pl:2,
-              color:(theme) => theme.palette.text.primary,
+              color:(theme:Theme) => theme.palette.text.primary,
               ['& .mnl__icon__root']:{
                 opacity:1
               }
@@ -144,7 +145,7 @@ const Nav:React.FC<NavProps> = ({openNav,onCloseNav}) => {
                  icon={open ? "eva:arrow-ios-downward-fill" : "eva:arrow-ios-forward-fill"} sx={{
                    left:-4, position:'absolute',
               opacity:0,
-              transition:(theme)=>theme.transitions.create(['opacity'],{
+              transition:(theme:Theme)=>theme.transitions.create(['opacity'],{
                      duration:theme.transitions.duration.standard
               })
             }}/>
@@ -199,7 +200,7 @@ const Nav:React.FC<NavProps> = ({openNav,onCloseNav}) => {
             height:1,
             position:'fixed',
             width:280,
-            borderRight: (theme) => `dashed 1px ${theme.palette.divider}`,
+            borderRight: (theme:Theme) => `dashed 1px ${theme.palette.divider}`,
           }}
         >
           {renderContent}
@@ -221,25 +222,71 @@ const Nav:React.FC<NavProps> = ({openNav,onCloseNav}) => {
   )
 }
 
+const o5 = {
+  dark:"#282F37",
+  light:"#EDEFF2"
+}
+
+const bw = (theme:Theme,type:string) => {
+  return {
+    "--nav-item-sub-active-color":theme.palette.text.primary,
+    ...type === 'vertical' && {
+      "--nav-item-sub-active-bg":theme.palette.action.hover,
+    }
+  }
+}
+
+const ZZ = (theme:Theme) => {
+  return {
+    ...bw(theme,"vertical"),
+    "--nav-item-gap":theme.spacing(.5),
+    "--nav-item-radius":`${theme.shape.borderRadius}px`,
+    "--nav-item-pt":theme.spacing(.5),
+    "--nav-item-pr":theme.spacing(1),
+    "--nav-item-pb":theme.spacing(.5),
+    "--nav-item-root-height":"44px",
+    "--nav-item-sub-height":"36px",
+    "--nav-item-pl":theme.spacing(1.5),
+    "--nav-icon-size":"24px",
+    "--nav-icon-margin":theme.spacing(0,1.5,0,0),
+    "--nav-bullet-size":"12px",
+    "--nav-bullet-light-color":o5.light,
+    "--nav-bullet-dark-color":o5.dark
+  }
+}
+
 interface ListButtonPros {
   active?:boolean;
+  open?:boolean;
   depth?:number;
+  component?:React.ElementType;
+  href?:string,
   theme?:Theme;
 }
 
-const ListButton = styled(ButtonBase,{
+const ListButton = styled(ListItemButton,{
   shouldForwardProp:(prop) => true
-})<ListButtonPros>(({theme,depth}) => {
+})<ListButtonPros>(({theme,depth,active,open}) => {
   const isRoot = depth === 1;
-  
+  const isSubItem = !isRoot;
   const style = {
     item:{
-      width:'100%'
+      width:'100%',
+      paddingTop:"var(--nav-item-pt)",
+      paddingLeft:"var(--nav-item-pl)",
+      paddingRight:"var(--nav-item-pr)",
+      paddingBottom:"var(--nav-item-pb)",
+      borderRadius:"var(--nav-item-radius)",
+      color:"var(--nav-item-color)",
+      "&:hover":{
+        backagroundColor:"var(--nav-item-hover-bg)"
+      }
     }
   }
   // 源代码depth: 1才返回样式
   return {
     ...(isRoot && {
+      ...ZZ(theme),
       ...style.item,
       minHeight:44,
       [`& .${navigationBarCssProps.item.icon}`]:{
@@ -247,6 +294,24 @@ const ListButton = styled(ButtonBase,{
       height:'',
       margin:""
       }
+    }),
+    ...(isSubItem && {
+      ...style.item,
+      minHeight:"var(--nav-item-sub-height)",
+      "&::before":{
+        left:"-11px",
+        content:'""',
+        position:"absolute",
+        width:"var(--nav-bullet-size)",
+        height:"var(--nav-bullet-size)",
+        //transform:
+        backgroundColor:"var(--nav-bullet-light-color)",
+        mask:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' viewBox='0 0 14 14'%3E%3Cpath d='M1 1v4a8 8 0 0 0 8 8h4' stroke='%23efefef' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 50% 50%/100% auto`
+      },
+      ...(active && {
+        color:"var(--nav-item-sub-active-color)",
+        backgroundColor:"var(--nav-item-sub-active-bg)"
+      }),
     })
   }
 })
@@ -330,7 +395,7 @@ const NavItem = ({item}) => {
             flexDirection:'column'
           }}>
             {item.children.map((tree:any) => (<Box component={'li'} key={tree.title} sx={{mt:1}}>
-              <ListButton depth={2} className={`${navigationBarCssProps.item}`}>
+              <ListButton depth={2} className={navigationBarCssProps.item.root} component={RouterLink} active={tree.path === pathname} href={tree.path}>
                   <Box className="mnl__nav__item__texts">
                       <Box className="mnl__nav__item__title">{tree.title}</Box>
                   </Box>

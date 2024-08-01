@@ -1,10 +1,10 @@
 import { alpha } from '@mui/material/styles';
 import { outlinedInputClasses } from '@mui/material/OutlinedInput';
-import {SxProps} from "@mui/material";
+import {SxProps,Theme} from "@mui/material";
 
 // ----------------------------------------------------------------------
 
-const Zm = (theme):SxProps => {
+const Zm = (theme:Theme):SxProps => {
   return {
     width:10,
     zIndex:9,

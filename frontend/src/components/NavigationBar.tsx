@@ -4,7 +4,7 @@
  */
 import {forwardRef, useState} from "react";
 import {Drawer} from "@mui/material";
-import Scrollbar from "./scrollbar";
+import Scrollbar from "./Scrollbar.tsx";
 
 const dee = {
     root:"mnl__scrollbar__root"

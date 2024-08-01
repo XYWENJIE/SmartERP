@@ -7,6 +7,7 @@ import {
   IconButton,
   InputBase, LinearProgress, ListItemButton, Stack, TextField,
   Typography,
+  Theme
 } from '@mui/material';
 import Contacts from '../contacts.tsx';
 import { useResponsive } from '../../../hooks/use-responsive.ts';
@@ -82,7 +83,7 @@ const MessageBox:React.FC<MessageBoxPros> = ({conversation}) => {
                 maxWidth:320,
                 borderRadius:1,
                 typography:'body2',
-                bgcolor:(theme)=>theme.palette.primary.light,
+                backgroundColor:(theme:Theme)=> `${theme.palette.primary.light}`,
                 ...me && {
                   color:'grey.800',
                   bgcolor:'primary.lighter'
@@ -132,7 +133,7 @@ export default function ChatView(){
     const [id,setId] = useState(searchParams.get("id"));
     const [message,setMessage] = useState("");
 
-    const [conversation,setConversation] = useState<Conversation>(null);
+    const [conversation,setConversation] = useState<Conversation|null>(null);
     useEffect(()=>{
         const conslist = async () => {
             const response = await api.get('/chat/contacts');

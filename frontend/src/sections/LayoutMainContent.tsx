@@ -1,6 +1,6 @@
 import { Container } from '@mui/material';
 import React from 'react';
-import { Breakpoint } from '@mui/system/createTheme/createBreakpoints';
+import { Breakpoint } from '@mui/system';
 
 interface MainContentProps{
   children:React.ReactNode;

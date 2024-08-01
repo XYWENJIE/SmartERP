@@ -91,11 +91,11 @@ export const Snackbar = styled(Toaster)(({theme}) => ({
     color:'currentColor',
     backgroundColor:'transparent',
     transform:'translate(-6px,6px)',
-    borderColor:(theme) => `rgba(${theme.palette.grey[500]},.16)`,
-    transition:(theme) => theme.transition.create(['background-color','border-color']),
+    borderColor:(theme:Theme) => `rgba(${theme.palette.grey[500]},.16)`,
+    transition:(theme:Theme) => theme.transitions.create(['background-color','border-color']),
     "&:hover":{
-      borderColor:(theme)=>`rgba(${theme.palette.grey[500]},.24)`,
-      backgroundColor:(theme) => `rgba(${theme.palette.grey[500]},.08)`
+      borderColor:(theme:Theme)=>`rgba(${theme.palette.grey[500]},.24)`,
+      backgroundColor:(theme:Theme) => `rgba(${theme.palette.grey[500]},.08)`
     }
   },
   [`& .${ToasterClassName.icon}`]:{

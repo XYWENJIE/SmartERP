@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import Iconify from '../../../components/iconify/iconify.tsx';
-import Scrollbar from '../../../components/scrollbar';
+import Scrollbar from '../../../components/Scrollbar.tsx';
 import { fToNow } from '../../../utils/format-time.ts';
 
 const NOTIFICATIONS:Notification[] = [
