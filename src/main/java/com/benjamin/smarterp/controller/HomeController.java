@@ -2,14 +2,14 @@ package com.benjamin.smarterp.controller;
 
 import com.benjamin.smarterp.domain.ResultStatus;
 import com.benjamin.smarterp.service.CommonService;
-import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -17,12 +17,12 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
-@Slf4j
 @RestController
 public class HomeController {
+	
+	private Logger log = LoggerFactory.getLogger(HomeController.class);
 
     private final AuthenticationManager authenticationManager;
     private final CommonService commonService;
@@ -57,7 +57,7 @@ public class HomeController {
 
         JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(now).expiresAt(now.plusSeconds(expiry)).subject(authenticationResponse.getName()).claim("scope",scope).build();
         String token = this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-        return ResultStatus.builder().code(0).token(token).build();
+        return ResultStatus.successToken(token);
     }
 
     @GetMapping("csrf")
@@ -68,11 +68,11 @@ public class HomeController {
     @ExceptionHandler
     public ResultStatus badCredentials(Exception exception){
         if(exception instanceof BadCredentialsException){
-            return ResultStatus.builder().code(400).message(exception.getMessage()).build();
+            return ResultStatus.error(exception.getMessage());
         }else{
             log.error(exception.getMessage(),exception);
         }
-        return ResultStatus.builder().code(500).message(exception.getMessage()).build();
+        return ResultStatus.error(exception.getMessage());
     }
 
     public record LoginResponse(String username,String password){}

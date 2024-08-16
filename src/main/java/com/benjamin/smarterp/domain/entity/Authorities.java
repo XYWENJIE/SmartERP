@@ -5,18 +5,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
 @Entity
 @Table(name = "TAB_AUTHORITIES")
 public class Authorities {
-
-    @Builder
-    public Authorities(Integer id,Integer userLoginId, String username, String authority) {
-        this.id = id;
-        this.username = username;
-        this.authority = authority;
-    }
+	
+	public Authorities() {
+		
+	}
+	
+	public Authorities(Integer userLoginId,String username,String authority) {
+		this.userLoginId = userLoginId;
+		this.username = username;
+		this.authority = authority;
+	}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,4 +32,38 @@ public class Authorities {
 
     @Column(name = "AUTHORITY")
     private String authority;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Integer getUserLoginId() {
+		return userLoginId;
+	}
+
+	public void setUserLoginId(Integer userLoginId) {
+		this.userLoginId = userLoginId;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getAuthority() {
+		return authority;
+	}
+
+	public void setAuthority(String authority) {
+		this.authority = authority;
+	}
+    
+    
 }

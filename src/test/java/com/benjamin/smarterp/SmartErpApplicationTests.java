@@ -2,41 +2,47 @@ package com.benjamin.smarterp;
 
 import com.benjamin.smarterp.domain.Request;
 import com.benjamin.smarterp.domain.ResultStatus;
+import com.benjamin.smarterp.domain.entity.Personnel;
+import com.benjamin.smarterp.domain.entity.PersonnelTeamRole;
+import com.benjamin.smarterp.domain.entity.Team;
+import com.benjamin.smarterp.domain.entity.type.PersonnelRole;
+import com.benjamin.smarterp.service.PersonnelService;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebFlux;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.util.List;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@Slf4j
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureWebTestClient
 class SmartErpApplicationTests {
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private final MockMvc mockMvc;
+	private WebTestClient webTestClient;
 
 	private final ObjectMapper objectMapper;
+
+	private final PersonnelService personnelService;
 
 	private final Jwt jwt = Jwt.withTokenValue("token").header("alg","none").claim("sub","huangrenjia").build();
 
 	@Autowired
-	public SmartErpApplicationTests(MockMvc mockMvc, ObjectMapper objectMapper) {
-		this.mockMvc = mockMvc;
+	public SmartErpApplicationTests(WebTestClient webTestClient, ObjectMapper objectMapper, PersonnelService personnelService) {
+		this.webTestClient = webTestClient;
         this.objectMapper = objectMapper;
+        this.personnelService = personnelService;
     }
 
 	@Test
@@ -45,25 +51,23 @@ class SmartErpApplicationTests {
 
 	@Test
 	void userLogin() throws Exception {
-		this.mockMvc.perform(post("/login"));
+		//this.webTestClient.post().uri("/login").exchange().expectStatus().isOk();
 	}
 
 	@Test
 	void chatContacts() throws Exception {
 		log.info("获取聊天联系人");
-		MvcResult mvcResult = this.mockMvc.perform(get("/chat/contacts").with(jwt().jwt(jwt))).andExpect(status().isOk()).andReturn();
-		String body = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
+		String body = this.webTestClient.get().uri("/chat/contacts").header("Authorization","Bearer "+jwt.getTokenValue()).exchange().expectStatus().isOk().expectBody(String.class).returnResult().getResponseBody();
+//		MvcResult mvcResult = this.mockMvc.perform(get("/chat/contacts").with(jwt().jwt(jwt))).andExpect(status().isOk()).andReturn();
+//		String body = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
 		log.info("测试返回对象是{}",body);
 	}
 
     @Test
 	void createConversation() throws Exception{
 		log.info("创建谈话会话");
-		Request.CreateConversation createConversation = new Request.CreateConversation("你好", List.of(2));
-		MvcResult mvcResult =this.mockMvc.perform(post("/chat/conversation")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(this.objectMapper.writeValueAsString(createConversation)).with(jwt().jwt(jwt))).andExpect(status().isOk()).andReturn();
-		String body = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
+		Request.CreateConversation createConversation = new Request.CreateConversation("你好", List.of("2"));
+		String body = this.webTestClient.post().uri("/chat/conversation").contentType(MediaType.APPLICATION_JSON).bodyValue(createConversation).header("Authorization","Bearer "+ jwt.getTokenValue()).exchange().expectStatus().isOk().expectBody(String.class).returnResult().getResponseBody();
 		JavaType javaType = this.objectMapper.getTypeFactory().constructParametricType(ResultStatus.class,String.class);
 		ResultStatus<String> resultStatus = this.objectMapper.readValue(body, javaType);
 		log.info(resultStatus.toString());
@@ -73,11 +77,30 @@ class SmartErpApplicationTests {
 	}
 
 	private void openMessage(String conversationId) throws Exception{
-		MvcResult mvcResult = this.mockMvc.perform(get("/chat/conversation/"+conversationId).with(jwt().jwt(jwt))).andExpect(status().isOk()).andReturn();
-		String body = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
+		String body = this.webTestClient.get().uri("/chat/conversation/"+conversationId).headers(httpHeaders -> httpHeaders.setBearerAuth(jwt.getTokenValue())).exchange().expectStatus().isOk().expectBody(String.class).returnResult().getResponseBody();
 		log.info(body);
 	}
 
+	@Test
+	public void personnelList() throws Exception {
+		log.info("获取人员列表");
+		this.webTestClient.get().uri("/personnel/list").headers(httpHeaders -> httpHeaders.setBearerAuth(jwt.getTokenValue())).exchange().expectStatus().isOk();
+	}
+
+
+	@Test
+	public void printPDF() throws IOException {
+		Team team = new Team();
+		team.setId(1);
+		team.setTeamName("壹家播商");
+		Personnel personnel = new Personnel();
+		PersonnelTeamRole personnelTeamRole = new PersonnelTeamRole();
+		personnelTeamRole.setRole(PersonnelRole.EMPLOYEE);
+		personnelTeamRole.setTeam(team);
+		personnel.getPersonnelTeamRoles().add(personnelTeamRole);
+		PDDocument document = this.personnelService.generationLaborContract(personnel,team);
+		document.save("D:/test.pdf");
+	}
 
 
 }

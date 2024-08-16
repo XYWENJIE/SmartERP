@@ -1,0 +1,20 @@
+POST http://localhost:11434/api/chat
+Content-Type: application/json
+
+{
+  "model": "llama3",
+  "messages": [
+    {
+      "role": "user",
+      "content": "你是谁，请编写Java代码"
+    }
+  ],
+  "stream": false
+}
+
+###
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###

@@ -8,20 +8,10 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
-@NoArgsConstructor
 @Table(name = "TAB_USER_LOGIN_PASSWORD_HISTORY")
 public class UserLoginPasswordHistory {
 
-    @Builder
-    public UserLoginPasswordHistory(String currentPassword, LocalDateTime fromDate, Integer id, LocalDateTime thruDate, Integer userLoginId) {
-        this.currentPassword = currentPassword;
-        this.fromDate = fromDate;
-        this.id = id;
-        this.thruDate = thruDate;
-        this.userLoginId = userLoginId;
-    }
 
     @Id
     @Column(name = "ID")
@@ -46,4 +36,46 @@ public class UserLoginPasswordHistory {
 
     @Column(name = "CURRENT_PASSWORD")
     private String currentPassword;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Integer getUserLoginId() {
+		return userLoginId;
+	}
+
+	public void setUserLoginId(Integer userLoginId) {
+		this.userLoginId = userLoginId;
+	}
+
+	public LocalDateTime getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(LocalDateTime fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public LocalDateTime getThruDate() {
+		return thruDate;
+	}
+
+	public void setThruDate(LocalDateTime thruDate) {
+		this.thruDate = thruDate;
+	}
+
+	public String getCurrentPassword() {
+		return currentPassword;
+	}
+
+	public void setCurrentPassword(String currentPassword) {
+		this.currentPassword = currentPassword;
+	}
+    
+    
 }

@@ -5,17 +5,22 @@ import com.benjamin.smarterp.domain.entity.Personnel;
 import com.benjamin.smarterp.domain.entity.UserLogin;
 import com.benjamin.smarterp.repository.jpa.PersonnelRepository;
 import com.benjamin.smarterp.repository.jpa.UserLoginRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-@Slf4j
 @Service
 public class CommonService {
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final PersonnelRepository personnelRepository;
     private final UserLoginRepository userLoginRepository;
@@ -50,5 +55,16 @@ public class CommonService {
 
         }
         return null;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String generateIdentity(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String timePart = LocalDateTime.now().format(formatter);
+        String randomNumber = RandomStringUtils.randomNumeric(6);
+        return timePart  + randomNumber;
     }
 }

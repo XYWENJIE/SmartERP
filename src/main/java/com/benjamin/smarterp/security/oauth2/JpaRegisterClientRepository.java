@@ -39,14 +39,14 @@ public class JpaRegisterClientRepository implements RegisteredClientRepository {
 
 	@Override
 	public RegisteredClient findById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		Assert.hasText(id, "id con be ");
+		return this.clientRepository.findById(id).map(this::toObject).orElse(null);
 	}
 
 	@Override
 	public RegisteredClient findByClientId(String clientId) {
-		// TODO Auto-generated method stub
-		return null;
+		Assert.hasText(clientId, "clientId con be ");
+		return this.clientRepository.findByClientId(clientId).map(this::toObject).orElse(null);
 	}
 	
 	private RegisteredClient toObject(Client client) {

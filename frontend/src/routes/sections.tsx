@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import AppPage from '../pages/app.tsx';
 import {ChatView} from "../sections/chat/view";
 import LoginPage from '../pages/login.tsx';
+import UserListPage from '../pages/user';
 
 export default function Router(){
   const routes = useRoutes([
@@ -17,7 +18,7 @@ export default function Router(){
       ),
       children:[
         {element:<AppPage/>,index:true},
-        {path:'user',element:<div>user</div>},
+        {path:'user',element:<UserListPage/>},
         {path:'chat',element:<ChatView/>}
       ]
     },

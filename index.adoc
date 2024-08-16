@@ -80,8 +80,9 @@ create table TAB_PERSONNEL (
 
 === 4.1 功能列表
 - dashboard
-- 用户管理
+- 人员管理
 - 财务管理
+- 模板管理
 - 许可证管理
 - 聊天工具
 
@@ -94,7 +95,20 @@ APP安装地区等信息
 当前访问、网站访问
 
 === 4.1.1 用户管理
-[java]
+人员信息管理是OA系统的最基本的信息功能，人员是系统的底座。该功能主要涉及到的类有~PersonnelController.java~
+该类提供功能控制。系统会为提供表格列表查看、HR添加、邀请新员工添加、离职和生成劳动合同等
+
+=== 4.1.4 模板管理
+系统提供法律模板、比如收据模板、劳动合同、商业合作以及购买合同等。
+以下是JPA定义
+[source,java]
+----
+@Entity
+@Table(name = "TAB_TEMPLATE")
+public class TemplateEntity extends BasicEntity {
+
+}
+----
 
 ==== 4.1.4 聊天工具
 聊天工具魔模块旨在提供企业内部和客服的沟通平台，支持实时信息传递、文件功共享和AI聊天功能。该模块将集成LLM模型以提供智能化沟通体验。

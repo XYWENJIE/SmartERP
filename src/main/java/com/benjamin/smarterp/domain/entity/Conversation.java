@@ -16,7 +16,6 @@ public class Conversation {
     public Conversation() {
     }
 
-    @Builder
     public Conversation(Set<ConversationMessage> conversationMessages, String conversationName, LocalDateTime createTime, String id, LocalDateTime lastActiveTime) {
         this.conversationMessages = conversationMessages;
         this.conversationName = conversationName;

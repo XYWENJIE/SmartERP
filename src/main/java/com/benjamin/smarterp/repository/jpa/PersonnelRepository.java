@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
 import java.util.List;
 import java.util.Optional;
 
-public interface PersonnelRepository extends JpaRepositoryImplementation<Personnel,Integer> {
+public interface PersonnelRepository extends JpaRepositoryImplementation<Personnel,String> {
 
     boolean existsByRealName(String realName);
 

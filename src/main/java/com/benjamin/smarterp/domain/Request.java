@@ -7,5 +7,5 @@ import java.util.List;
 
 public class Request {
 
-    public record CreateConversation(@JsonProperty("message") @NotBlank String message, @JsonProperty("contacts") List<Integer> contacts){}
+    public record CreateConversation(@JsonProperty("message") @NotBlank String message, @JsonProperty("contacts") List<String> contacts){}
 }

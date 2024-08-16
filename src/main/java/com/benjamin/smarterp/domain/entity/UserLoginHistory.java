@@ -6,27 +6,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
-@NoArgsConstructor
 @Table(name = "TAB_USER_LOGIN_HISTORY")
 public class UserLoginHistory {
-
-	@Builder
-	public UserLoginHistory(LocalDateTime formDate, Integer id, String remoteHost, String serverRootUrl, Integer userLoginId) {
-		this.formDate = formDate;
-		this.id = id;
-		this.remoteHost = remoteHost;
-		this.serverRootUrl = serverRootUrl;
-		this.userLoginId = userLoginId;
-	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,4 +32,43 @@ public class UserLoginHistory {
 	@Column(name = "SERVER_ROOT_URL")
 	private String serverRootUrl;
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Integer getUserLoginId() {
+		return userLoginId;
+	}
+
+	public void setUserLoginId(Integer userLoginId) {
+		this.userLoginId = userLoginId;
+	}
+
+	public LocalDateTime getFormDate() {
+		return formDate;
+	}
+
+	public void setFormDate(LocalDateTime formDate) {
+		this.formDate = formDate;
+	}
+
+	public String getRemoteHost() {
+		return remoteHost;
+	}
+
+	public void setRemoteHost(String remoteHost) {
+		this.remoteHost = remoteHost;
+	}
+
+	public String getServerRootUrl() {
+		return serverRootUrl;
+	}
+
+	public void setServerRootUrl(String serverRootUrl) {
+		this.serverRootUrl = serverRootUrl;
+	}
 }

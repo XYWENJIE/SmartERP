@@ -3,7 +3,7 @@ import {Box, SxProps} from "@mui/material";
 import SimpleBar from "simplebar-react";
 
 interface ScrollbarProps {
-    children:React.ReactNode;
+    children?:React.ReactNode;
     sx?:SxProps;
 }
 

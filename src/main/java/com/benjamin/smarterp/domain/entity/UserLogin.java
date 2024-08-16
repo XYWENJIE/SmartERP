@@ -8,20 +8,10 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.Set;
 
-@Data
-@NoArgsConstructor
+
 @Entity
 @Table(name = "TAB_USER_LOGIN")
 public class UserLogin {
-
-    @Builder
-    public UserLogin(String username, String password, Boolean enabled,Boolean isSystem, Set<Authorities> authorities) {
-        this.username = username;
-        this.password = password;
-        this.enabled = enabled;
-        this.authorities = authorities;
-        this.isSystem = isSystem;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,4 +41,70 @@ public class UserLogin {
     @OneToMany
     @JoinColumn(name = "USER_LOGIN_ID")
     private List<UserLoginHistory> userLoginHistories;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Boolean getIsSystem() {
+		return isSystem;
+	}
+
+	public void setIsSystem(Boolean isSystem) {
+		this.isSystem = isSystem;
+	}
+
+	public Set<Authorities> getAuthorities() {
+		return authorities;
+	}
+
+	public void setAuthorities(Set<Authorities> authorities) {
+		this.authorities = authorities;
+	}
+
+	public Personnel getPersonnel() {
+		return personnel;
+	}
+
+	public void setPersonnel(Personnel personnel) {
+		this.personnel = personnel;
+	}
+
+	public List<UserLoginHistory> getUserLoginHistories() {
+		return userLoginHistories;
+	}
+
+	public void setUserLoginHistories(List<UserLoginHistory> userLoginHistories) {
+		this.userLoginHistories = userLoginHistories;
+	}
+    
+    
 }

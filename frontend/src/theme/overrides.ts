@@ -1,6 +1,6 @@
 import { alpha } from '@mui/material/styles';
 import { outlinedInputClasses } from '@mui/material/OutlinedInput';
-import {SxProps,Theme} from "@mui/material";
+import { LabelDisplayedRowsArgs, SxProps, Theme } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -65,6 +65,11 @@ export function overrides(theme:any) {
           verticalAlign: 'bottom',
         },
       },
+    },
+    MuiLink:{
+      defaultProps:{
+        underline:'hover'
+      }
     },
     MuiBackdrop: {
       styleOverrides: {
@@ -200,11 +205,59 @@ export function overrides(theme:any) {
     },
     MuiTableCell: {
       styleOverrides: {
+        root:{
+          borderBottomStyle:"dashed"
+        },
         head: {
+          fontSize:14,
           color: theme.palette.text.secondary,
+          fontWeight:theme.typography.fontWeightSemiBold,
           backgroundColor: theme.palette.background.neutral,
         },
+        stickyHeader:{
+          backgroundColor:theme.palette.background.paper
+        },
+        paddingCheckbox:{
+          paddingLeft:theme.spacing(1)
+        }
       },
+    },
+    MuiTableContainer:{
+      styleOverrides:{
+        root:{
+          position:"relative",
+          scrollbarWidth:"thin",
+        }
+      }
+    },
+    MuiTablePagination:{
+      defaultProps:{
+        getItemAriaLabel:(type:string) => type === "first" ? "第一页" : type === "last" ? "最后一页" : type === "next" ? "下一页" : "上一页",
+        labelRowsPerPage:"每页行数:",
+        labelDisplayedRows:({from,to,count,page}:LabelDisplayedRowsArgs)=> `第${from}条到第${to}条，${count !== -1 ? `共${count}条`:`至少${count}条`}`,
+        backIconButtonProps:{
+          size:"small"
+        },
+        nextIconButtonProps:{
+          size:"small"
+        },
+        slotProps:{
+          select:{
+            name:"table-pagination-select"
+          }
+        }
+      },
+      styleOverrides:{
+        root:{
+          width:"100%",
+        },
+        toolbar:{
+          height:64
+        },
+        actions:{
+          marginRight:8
+        }
+      }
     },
     MuiTooltip: {
       styleOverrides: {

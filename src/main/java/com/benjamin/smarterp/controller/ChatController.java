@@ -10,6 +10,9 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +23,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Slf4j
 @RestController
 @RequestMapping("chat")
 public class ChatController {
+	
+	private Logger log = LoggerFactory.getLogger(ChatController.class);
 
     private final ChatMessageRepository chatMessageRepository;
     private final PersonnelRepository personnelRepository;
@@ -69,8 +73,9 @@ public class ChatController {
     @PostMapping("conversation")
     public ResultStatus<String> createConversation(@RequestBody @Valid Request.CreateConversation createConversation){
         log.info("创建聊天会话{}",createConversation);
-        Conversation conversation = Conversation.builder().id(UUID.randomUUID()
-                .toString()).conversationName(createConversation.contacts().toString()).build();
+        Conversation conversation = new Conversation();
+        conversation.setId(UUID.randomUUID().toString());
+        conversation.setConversationName(createConversation.contacts().toString());
         conversationRepository.save(conversation);
         Personnel currentPersonnel = commonService.authenticationConvert();
         ConversationParticipation currentParticipation = new ConversationParticipation();
@@ -100,9 +105,12 @@ public class ChatController {
                 notification.setContent("您有{}条未读消息");
                 this.notificationRepository.save(notification);
             }else{
-                Notification notification = Notification.builder()
-                        .senderUser(currentPersonnel.getUserLogin()).receiverUser(personnel.getUserLogin())
-                        .type(Notification.Type.CHAT).status(Notification.Status.UNREAD).content("您有1条未读消息").build();
+            	Notification notification = new Notification();
+            	notification.setSenderUser(currentPersonnel.getUserLogin());
+            	notification.setReceiverUser(personnel.getUserLogin());
+            	notification.setType(Notification.Type.CHAT);
+            	notification.setStatus(Notification.Status.UNREAD);
+            	notification.setContent("您有1条未读消息");
                 this.notificationRepository.save(notification);
             }
             if(personnel.getRobot()){

@@ -3,7 +3,6 @@ package com.benjamin.smarterp.domain.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Data
 @Entity
 @Table(name = "TAB_CONVERSATIONL_PARTICAIPATION")
 public class ConversationParticipation {
@@ -20,5 +19,31 @@ public class ConversationParticipation {
     @ManyToOne
     @JoinColumn(name = "CPMVERSATOPM_ID")
     private Conversation conversation;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Personnel getPersonnel() {
+		return personnel;
+	}
+
+	public void setPersonnel(Personnel personnel) {
+		this.personnel = personnel;
+	}
+
+	public Conversation getConversation() {
+		return conversation;
+	}
+
+	public void setConversation(Conversation conversation) {
+		this.conversation = conversation;
+	}
+    
+    
 
 }

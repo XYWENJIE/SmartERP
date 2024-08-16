@@ -1,16 +1,20 @@
 package com.benjamin.smarterp.configuration;
 
-import com.benjamin.smarterp.domain.entity.Personnel;
-import com.benjamin.smarterp.domain.entity.UserLogin;
 import com.benjamin.smarterp.repository.jpa.*;
 import com.benjamin.smarterp.security.JpaUserDetailsManager;
+import com.benjamin.smarterp.security.oauth2.JpaOAuth2AuthorizationConsentService;
+import com.benjamin.smarterp.security.oauth2.JpaRegisterClientRepository;
+import com.benjamin.smarterp.security.oauth2.OAuth2AuthorizationServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,30 +22,21 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.oidc.OidcScopes;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeRequestAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
@@ -50,10 +45,11 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.*;
 
-@Slf4j
-@EnableWebSecurity
+@EnableWebFluxSecurity
 @Configuration
 public class SecurityConfiguration {
+	
+	private static final Logger log = LoggerFactory.getLogger(SecurityConfiguration.class);
 
     @Value("${jwt.public.key}")
     private RSAPublicKey rsaPublicKey;
@@ -73,18 +69,26 @@ public class SecurityConfiguration {
 //    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/login","/csrf","/static/**","**.png").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .oauth2ResourceServer(resource->resource.jwt(Customizer.withDefaults()))
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .cors((cors) -> cors.configurationSource(corsConfigurationSource()));
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http){
+        http.csrf(csrf -> csrf.disable())
+                .authorizeExchange(authorizeExchange -> authorizeExchange.pathMatchers("/login","/csrf","/static/**","**.png").permitAll().anyExchange().authenticated())
+                .oauth2ResourceServer(oauth2ResourceServer ->oauth2ResourceServer.jwt(Customizer.withDefaults())).cors(cors -> cors.configurationSource(corsConfigurationSource()));
         return http.build();
     }
+
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+//        http
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests((authorize) -> authorize
+//                        .requestMatchers("/login","/csrf","/static/**","**.png").permitAll()
+//                        .anyRequest().authenticated()
+//                )
+//                .oauth2ResourceServer(resource->resource.jwt(Customizer.withDefaults()))
+//                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .cors((cors) -> cors.configurationSource(corsConfigurationSource()));
+//        return http.build();
+//    }
 
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();
@@ -128,21 +132,21 @@ public class SecurityConfiguration {
         return userDetailsManager;
     }
 
-    @Bean
-    public RegisteredClientRepository registeredClientRepository(){
-        RegisteredClient odicClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("oidc-client")
-                .clientSecret("{noop}secret")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .redirectUri("http://localhost:5173")
-                .postLogoutRedirectUri("http://localhost:5173/")
-                .scope(OidcScopes.OPENID)
-                .scope(OidcScopes.PROFILE)
-                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-                .build();
-        return new InMemoryRegisteredClientRepository(odicClient);
-    }
+//    @Bean
+//    public RegisteredClientRepository registeredClientRepository(){
+//        RegisteredClient odicClient = RegisteredClient.withId(UUID.randomUUID().toString())
+//                .clientId("oidc-client")
+//                .clientSecret("{noop}secret")
+//                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+//                .redirectUri("http://localhost:5173")
+//                .postLogoutRedirectUri("http://localhost:5173/")
+//                .scope(OidcScopes.OPENID)
+//                .scope(OidcScopes.PROFILE)
+//                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+//                .build();
+//        return new InMemoryRegisteredClientRepository(odicClient);
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -150,8 +154,8 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public JwtDecoder jwtDecoder(){
-        return NimbusJwtDecoder.withPublicKey(this.rsaPublicKey).build();
+    public ReactiveJwtDecoder jwtDecoder(){
+        return NimbusReactiveJwtDecoder.withPublicKey(this.rsaPublicKey).build();
     }
 
     @Bean
@@ -195,6 +199,32 @@ public class SecurityConfiguration {
         }else {
             throw new Exception("Unsupporte key type"+type);
         }
+    }
+    
+    //OAuth2
+    @Bean
+    public RegisteredClientRepository registeredClientRepository(ClientRepository clientRepository,ObjectMapper objectMapper) {
+    	return new JpaRegisterClientRepository(clientRepository, objectMapper);
+    }
+    
+//    @Bean
+//    public OAuth2AuthorizationService authorizationService(AuthorizationRepository authorizationRepository,
+//    		RegisteredClientRepository registeredClientRepository,
+//    		ObjectMapper objectMapper) {
+//    	return new OAuth2AuthorizationServiceImpl(authorizationRepository, registeredClientRepository, objectMapper);
+//    }
+    
+    @Bean
+    public OAuth2AuthorizationConsentService authorizationConsentService(AuthorizationConsentRepository authorizationConsentRepository,
+    		RegisteredClientRepository registeredClientRepository) {
+    	return new JpaOAuth2AuthorizationConsentService(authorizationConsentRepository, registeredClientRepository);
+    }
+    
+    @Bean("authorizationCodeRequestAuthenticationProider")
+    public OAuth2AuthorizationCodeRequestAuthenticationProvider authorizationCodeRequestAuthenticationProider(
+    		RegisteredClientRepository registeredClientRepository,OAuth2AuthorizationService authorizationService,
+    		OAuth2AuthorizationConsentService authorizationConsentService) {
+    	return new OAuth2AuthorizationCodeRequestAuthenticationProvider(registeredClientRepository, authorizationService, authorizationConsentService);
     }
 
 

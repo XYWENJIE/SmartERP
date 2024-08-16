@@ -9,6 +9,9 @@ import com.benjamin.smarterp.repository.jpa.UserLoginRepository;
 import com.benjamin.smarterp.repository.jpa.UserLoginHistoryRepository;
 import com.benjamin.smarterp.repository.jpa.UserLoginPasswordHistoryRepository;
 import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,9 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @Transactional
 public class JpaUserDetailsManager implements UserDetailsManager {
+	
+	private final Logger log = LoggerFactory.getLogger(JpaUserDetailsManager.class);
 
     private final UserLoginRepository userLoginRepository;
     private final AuthoritiesRepository authoritiesRepository;
@@ -48,18 +52,17 @@ public class JpaUserDetailsManager implements UserDetailsManager {
 
     @Override
     public void createUser(UserDetails user) {
-    	UserLogin userInfo = UserLogin.builder().username(user.getUsername()).password(passwordEncoder.encode(user.getPassword())).build();
+    	UserLogin userInfo = new UserLogin();
+    	userInfo.setUsername(user.getUsername());
+    	userInfo.setPassword(passwordEncoder.encode(user.getPassword()));
         log.info("创建用户{}",userInfo.toString());
         this.userLoginRepository.save(userInfo);
-
-        this.userLoginPasswordHistoryRepository.save(
-                UserLoginPasswordHistory.builder()
-                        .currentPassword(user.getPassword())
-                        .userLoginId(userInfo.getId())
-                        .fromDate(LocalDateTime.now())
-                        .build()
-        );
-        List<Authorities> authoritiesList = user.getAuthorities().stream().map(authority -> Authorities.builder().userLoginId(userInfo.getId()).username(user.getUsername()).authority(authority.getAuthority()).build()).toList();
+        UserLoginPasswordHistory userLoginPasswordHistory = new UserLoginPasswordHistory();
+        userLoginPasswordHistory.setCurrentPassword(user.getPassword());
+        userLoginPasswordHistory.setUserLoginId(userInfo.getId());
+        userLoginPasswordHistory.setFromDate(LocalDateTime.now());
+        this.userLoginPasswordHistoryRepository.save(userLoginPasswordHistory);
+        List<Authorities> authoritiesList = user.getAuthorities().stream().map(authority -> new Authorities(userInfo.getId(),user.getUsername(),authority.getAuthority())).toList();
         log.info("保存权限");
         this.authoritiesRepository.saveAll(authoritiesList);
     }
@@ -86,10 +89,10 @@ public class JpaUserDetailsManager implements UserDetailsManager {
                 this.userLoginPasswordHistoryRepository.save(userLoginPasswordHistoryOptional.get());
                 userLogin.setPassword(passwordEncoder.encode(newPassword));
                 this.userLoginRepository.save(userLogin);
-                this.userLoginPasswordHistoryRepository.save(UserLoginPasswordHistory.builder()
-                        .userLoginId(userLogin.getId())
-                        .currentPassword(userLogin.getPassword())
-                        .build());
+                UserLoginPasswordHistory history = new UserLoginPasswordHistory();
+                history.setUserLoginId(userLogin.getId());
+                history.setCurrentPassword(userLogin.getPassword());
+                this.userLoginPasswordHistoryRepository.save(history);
             }
         }
     }
@@ -106,7 +109,10 @@ public class JpaUserDetailsManager implements UserDetailsManager {
             throw new UsernameNotFoundException(username);
         }
         UserLogin userInfo = optional.get();
-        this.userLoginHistoryRepository.save(UserLoginHistory.builder().userLoginId(userInfo.getId()).formDate(LocalDateTime.now()).build());
+        UserLoginHistory history = new UserLoginHistory();
+        history.setUserLoginId(userInfo.getId());
+        history.setFormDate(LocalDateTime.now());
+        this.userLoginHistoryRepository.save(history);
         List<GrantedAuthority> authorities = new ArrayList<>(userInfo.getAuthorities().stream().map(authorities1 -> new SimpleGrantedAuthority(authorities1.getAuthority())).toList());
         return new User(userInfo.getUsername(),userInfo.getPassword(),authorities);
     }
