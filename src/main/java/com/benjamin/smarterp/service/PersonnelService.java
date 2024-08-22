@@ -64,7 +64,8 @@ public class PersonnelService {
             //TODO 查询到TEMPLATE劳动合同模板
         }else{
             try{
-                HtmlConverter.convertToPdf(new ClassPathResource("").getFile(),new File("D:/test.pdf"));
+                PDDocument document = new PDDocument();
+                return HtmlConverter.convertToDocument(new ClassPathResource("contract/labor_contract_general.html").getFile(),document,null);
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }

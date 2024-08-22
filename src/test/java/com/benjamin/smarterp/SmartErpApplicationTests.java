@@ -88,6 +88,10 @@ class SmartErpApplicationTests {
 	}
 
 
+	/**
+	 * 创建生产PDF文件，采用Apache PDFBox
+	 * @throws IOException 异常通知
+	 */
 	@Test
 	public void printPDF() throws IOException {
 		Team team = new Team();

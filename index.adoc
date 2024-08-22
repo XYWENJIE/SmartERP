@@ -24,9 +24,10 @@ SmartERP将涵盖财务、采购、库存、销售、人力资源等多个业务
 * Java: 项目的后端编程语言。
 * Spring Boot: 用于简化Spring应用的初始搭建以及开发过程的框架。
 * Spring Security：用于实现安全认证和授权
-* Hibernate: 作为ORM工具，Hibernate将Java对象映射到数据库表，简化了数据持久化过程
+* Hibernate ORM: 作为ORM工具，Hibernate将Java对象映射到数据库表，简化了数据持久化过程
 * Spring Data JPA: 与Hibernate结合使用提供简洁的数据访问层实现。
 * Spring WebSocket: 用于实现实时通信，支持聊天工具等功能的
+* Apache PDFBox：用于实现生产PDF文件
 
 === 2.3 数据库
 
@@ -164,7 +165,7 @@ create TABLE TAB_CONVERSATION_PERSONNEL_PARTICIPATION (
 
 == 6. 开发环境
 === 6.1 硬件要求
-没有要求，为了良好的开发体验建议内存16GB RAM更高和SSD硬盘，未来会集成相关供应商和Docket等功能最好提供网络支持。
+没有要求，为了良好的开发体验建议内存16GB RAM更高和SSD硬盘，未来会集成相关供应商和Docket等功能最好提供网络支持。为来会测试Ollama功能，因此建议内存16G和独立显卡
 
 === 6.2 软件要求
 - 操作系统：Windows/Linux/MacOS
