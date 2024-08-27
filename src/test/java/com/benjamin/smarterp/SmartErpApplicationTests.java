@@ -9,19 +9,18 @@ import com.benjamin.smarterp.domain.entity.type.PersonnelRole;
 import com.benjamin.smarterp.service.PersonnelService;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.pdfbox.pdmodel.PDDocument;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebFlux;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 @SpringBootTest
@@ -102,8 +101,12 @@ class SmartErpApplicationTests {
 		personnelTeamRole.setRole(PersonnelRole.EMPLOYEE);
 		personnelTeamRole.setTeam(team);
 		personnel.getPersonnelTeamRoles().add(personnelTeamRole);
-		PDDocument document = this.personnelService.generationLaborContract(personnel,team);
-		document.save("D:/test.pdf");
+		OutputStream outputStream = this.personnelService.generationLaborContract(personnel,team);
+		log.info("任务执行完成");
+		Assertions.assertNotNull(outputStream);
+		FileOutputStream fileOutputStream = new FileOutputStream("D:\\test.pdf");
+		((ByteArrayOutputStream)outputStream).writeTo(fileOutputStream);
+		fileOutputStream.close();
 	}
 
 
